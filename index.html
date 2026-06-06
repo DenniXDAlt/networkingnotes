@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IT1x13 — The Packet's Journey: Study Notes</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap');
+  :root{--bg:#0d1117;--surface:#161b22;--surface2:#1c2330;--border:#30363d;--p1:#58a6ff;--p2:#3fb950;--p3:#f78166;--p4:#d2a8ff;--warn:#e3b341;--text:#e6edf3;--muted:#8b949e;--mono:'Space Mono',monospace;--sans:'DM Sans',sans-serif}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.7;padding:2rem 1rem 4rem}
+  .container{max-width:900px;margin:0 auto}
+  header{border-bottom:2px solid var(--border);padding-bottom:1.5rem;margin-bottom:2.5rem}
+  .tag{font-family:var(--mono);font-size:11px;color:var(--warn);letter-spacing:2px;text-transform:uppercase;margin-bottom:.4rem}
+  header h1{font-family:var(--mono);font-size:1.7rem;font-weight:700;line-height:1.2;color:#fff}
+  header p{color:var(--muted);margin-top:.5rem;font-size:14px}
+  .alert{background:#1a1600;border:1px solid var(--warn);border-left:4px solid var(--warn);border-radius:6px;padding:1rem 1.2rem;margin-bottom:2rem;font-size:14px}
+  .alert strong{color:var(--warn)}
+  .nav{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:2.5rem}
+  .nav a{font-family:var(--mono);font-size:12px;padding:.35rem .9rem;border-radius:20px;text-decoration:none;border:1px solid;transition:opacity .2s}
+  .nav a:hover{opacity:.7}
+  .nav a.p1{color:var(--p1);border-color:var(--p1)}
+  .nav a.p2{color:var(--p2);border-color:var(--p2)}
+  .nav a.p3{color:var(--p3);border-color:var(--p3)}
+  .nav a.p4{color:var(--p4);border-color:var(--p4)}
+  .nav a.qa{color:var(--warn);border-color:var(--warn)}
+  .phase{background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:2rem;overflow:hidden}
+  .phase-header{display:flex;align-items:center;gap:1rem;padding:1rem 1.4rem;border-bottom:1px solid var(--border)}
+  .phase-badge{font-family:var(--mono);font-size:11px;font-weight:700;padding:.2rem .6rem;border-radius:4px;white-space:nowrap}
+  .ph1 .phase-badge{background:#0c2a4a;color:var(--p1)}
+  .ph2 .phase-badge{background:#0a2a15;color:var(--p2)}
+  .ph3 .phase-badge{background:#2a1510;color:var(--p3)}
+  .ph4 .phase-badge{background:#1e1230;color:var(--p4)}
+  .phase-header h2{font-family:var(--sans);font-size:1rem;font-weight:600;color:#fff}
+  .phase-header .sub{font-size:13px;color:var(--muted);margin-left:auto}
+  .phase-body{padding:1.4rem}
+  h3{font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:.7rem;margin-top:1.3rem}
+  h3:first-child{margin-top:0}
+  ul,ol{padding-left:1.3rem}
+  li{margin-bottom:.35rem;font-size:14px}
+  li strong{color:#fff}
+  .code{font-family:var(--mono);font-size:12px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:.9rem 1.1rem;margin:.8rem 0;overflow-x:auto;line-height:1.8}
+  .code .label{color:var(--muted)}
+  .code .val{color:var(--p1)}
+  .code .arrow{color:var(--warn)}
+  .code .ok{color:var(--p2)}
+  .code .hi{color:var(--p3)}
+  .flow{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem;margin:.8rem 0}
+  .flow-box{font-family:var(--mono);font-size:11px;padding:.3rem .7rem;border-radius:4px;background:var(--surface2);border:1px solid var(--border);white-space:nowrap}
+  .flow-arrow{color:var(--muted);font-size:14px}
+  .kv{width:100%;border-collapse:collapse;margin:.8rem 0;font-size:13px}
+  .kv td{padding:.45rem .7rem;border-bottom:1px solid var(--border);vertical-align:top}
+  .kv td:first-child{font-family:var(--mono);font-size:12px;color:var(--warn);width:30%;white-space:nowrap}
+  .kv tr:last-child td{border-bottom:none}
+  .qa-section{background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:2rem;overflow:hidden}
+  .qa-header{background:#1a1500;border-bottom:1px solid var(--border);padding:.9rem 1.4rem;font-family:var(--mono);font-size:12px;color:var(--warn);text-transform:uppercase;letter-spacing:1px}
+  .qa-body{padding:1.4rem}
+  .qa-item{margin-bottom:1.2rem}
+  .qa-item:last-child{margin-bottom:0}
+  .q{font-size:14px;font-weight:600;color:#fff;margin-bottom:.4rem;padding-left:.9rem;border-left:3px solid var(--warn)}
+  .a{font-size:13.5px;color:var(--text);padding-left:.9rem;opacity:.85}
+  .scenario-table{width:100%;border-collapse:collapse;font-size:13px;margin:.8rem 0}
+  .scenario-table th{background:var(--surface2);font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);padding:.5rem .8rem;text-align:left;border-bottom:1px solid var(--border)}
+  .scenario-table td{font-family:var(--mono);font-size:12px;padding:.45rem .8rem;border-bottom:1px solid var(--border)}
+  .scenario-table tr:last-child td{border-bottom:none}
+  .scenario-table .src td{color:var(--p1)}
+  .scenario-table .dst td{color:var(--p2)}
+  .tip{background:#0a1f0a;border:1px solid #1e4d1e;border-radius:6px;padding:.8rem 1rem;font-size:13px;margin:.8rem 0;color:#b5d9b5}
+  .tip strong{color:var(--p2)}
+  footer{text-align:center;font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border)}
+  .script-block{background:#0e1a2e;border:1px solid #1e3a5f;border-left:4px solid var(--p1);border-radius:6px;padding:1rem 1.2rem;margin:.8rem 0}
+  .script-label{font-family:var(--mono);font-size:10px;color:var(--p1);letter-spacing:2px;text-transform:uppercase;margin-bottom:.6rem}
+  .script-text{font-size:14px;line-height:1.85;color:#cce0ff}
+  .script-text .action{color:var(--warn);font-style:italic;font-size:13px}
+  .script-text .emphasis{color:#fff;font-weight:600}
+  .script-toggle{display:flex;align-items:center;gap:.5rem;cursor:pointer;margin-top:1.2rem;margin-bottom:.2rem;user-select:none}
+  .script-toggle-btn{font-family:var(--mono);font-size:11px;background:#0c2a4a;color:var(--p1);border:1px solid var(--p1);border-radius:4px;padding:.2rem .7rem;cursor:pointer;transition:background .15s}
+  .script-toggle-btn:hover{background:#1a3f6a}
+  .script-toggle-label{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+  .script-collapsible{display:none}
+  .script-collapsible.open{display:block}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <div class="tag">IT1x13 · Week 8 Assignment 1 · 25%</div>
+  <h1>The Packet's Journey — Study Notes</h1>
+  <p>Compiled from Topics 2–7 · All four phases · Sample Q&amp;A bank</p>
+</header>
+
+<div class="alert">
+  <strong>⚡ Key Rules:</strong> Role is randomised on the day — know ALL 4 phases. Notes allowed during 5-min prep only. No cheatsheets while presenting. No photos of the scenario table. Scope: Layers 1–3 (Layer 4: encapsulation/de-encapsulation only, no TCP/UDP internals).
+</div>
+
+<div class="nav">
+  <a href="#scenario" class="qa">Sample Scenario</a>
+  <a href="#phase1" class="p1">Phase 1: Source Packaging</a>
+  <a href="#phase2" class="p2">Phase 2: Local Discovery</a>
+  <a href="#phase3" class="p3">Phase 3: Gateway Transition</a>
+  <a href="#phase4" class="p4">Phase 4: Arrival &amp; De-encap</a>
+  <a href="#qa" class="qa">Q&amp;A Bank</a>
+</div>
+
+<!-- SCENARIO -->
+<div id="scenario" class="phase">
+  <div class="phase-header">
+    <span class="phase-badge" style="background:#1a1500;color:var(--warn)">SCENARIO</span>
+    <h2>SME Web Portal Access (Sample Reference)</h2>
+  </div>
+  <div class="phase-body">
+    <h3>Device Table</h3>
+    <table class="scenario-table">
+      <thead><tr><th>Device</th><th>Role</th><th>IPv4 Address</th><th>MAC</th></tr></thead>
+      <tbody>
+        <tr class="src"><td>PC-Accounting</td><td>Source Host</td><td>192.168.10.10/24</td><td>AA-AA</td></tr>
+        <tr><td>R1 G0/0/0</td><td>LAN Interface (Default GW)</td><td>192.168.10.1/24</td><td>BB-BB</td></tr>
+        <tr><td>R1 S0/1/0</td><td>WAN Interface</td><td>10.1.1.1/30</td><td>CC-CC</td></tr>
+        <tr><td>R2 S0/1/0</td><td>WAN Interface</td><td>10.1.1.2/30</td><td>DD-DD</td></tr>
+        <tr><td>R2 G0/0/0</td><td>LAN Interface</td><td>172.16.1.1/24</td><td>11-11</td></tr>
+        <tr class="dst"><td>Web-Server</td><td>Destination</td><td>172.16.1.99/24</td><td>22-22</td></tr>
+      </tbody>
+    </table>
+    <h3>Quick Network Check</h3>
+    <div class="code">
+      <span class="label">PC subnet:     </span><span class="val">192.168.10.0/24</span><br>
+      <span class="label">Server subnet: </span><span class="val">172.16.1.0/24</span><br>
+      <span class="arrow">→ </span><span class="hi">DIFFERENT networks</span><span class="label"> — default gateway (R1 = 192.168.10.1) must be used</span>
+    </div>
+  </div>
+</div>
+
+<!-- PHASE 1 -->
+<div id="phase1" class="phase ph1">
+  <div class="phase-header">
+    <span class="phase-badge">Phase 1</span>
+    <h2>Source Packaging — Encapsulation Down the OSI Stack</h2>
+    <span class="sub">2 min</span>
+  </div>
+  <div class="phase-body">
+    <h3>Core idea</h3>
+    <p style="font-size:14px;margin-bottom:.8rem">The application data is wrapped layer-by-layer as it moves <em>down</em> the stack. Each layer adds its own header (and Layer 2 adds a trailer). This process is called <strong>encapsulation</strong>.</p>
+
+    <h3>Layer-by-layer breakdown</h3>
+    <table class="kv">
+      <tr><td>Layer 7 — Application</td><td>HTTP request generated → PDU called <strong>Data / Message</strong></td></tr>
+      <tr><td>Layer 4 — Transport</td><td>Adds port numbers header → PDU = <strong>Segment</strong>. (For this exam: just know it passes PDUs down for encapsulation. No TCP/UDP mechanism detail required.)</td></tr>
+      <tr><td>Layer 3 — Network</td><td>Adds IPv4 header (Src IP, Dst IP, TTL, Protocol) → PDU = <strong>Packet</strong></td></tr>
+      <tr><td>Layer 2 — Data Link</td><td>Adds Ethernet header (Src MAC, Dst MAC, EtherType) + Trailer (FCS/CRC) → PDU = <strong>Frame</strong></td></tr>
+      <tr><td>Layer 1 — Physical</td><td>Converts frame to <strong>bits</strong> (electrical/light/radio signals) onto the medium</td></tr>
+    </table>
+
+    <h3>IPv4 Packet Header — key fields</h3>
+    <div class="code">
+      <span class="label">Source IP:       </span><span class="val">192.168.10.10  </span><span class="label">← NEVER changes end-to-end</span><br>
+      <span class="label">Destination IP:  </span><span class="val">172.16.1.99    </span><span class="label">← NEVER changes end-to-end</span><br>
+      <span class="label">TTL:             </span><span class="val">128            </span><span class="label">← decremented by 1 at each router hop</span><br>
+      <span class="label">Protocol:        </span><span class="val">0x06 (TCP)     </span><span class="label">← tells Layer 3 what's inside the packet</span>
+    </div>
+
+    <h3>Ethernet Frame — Layer 2 fields (first hop: PC → R1)</h3>
+    <div class="code">
+      <span class="label">Src MAC:      </span><span class="val">AA-AA  </span><span class="label">(PC NIC)</span><br>
+      <span class="label">Dst MAC:      </span><span class="val">BB-BB  </span><span class="label">(R1 G0/0/0 — the default gateway, NOT the web server!)</span><br>
+      <span class="label">EtherType:    </span><span class="val">0x0800 </span><span class="label">(IPv4)</span><br>
+      <span class="label">FCS/Trailer:  </span><span class="val">error detection bits added</span>
+    </div>
+
+    <h3>Encapsulation flow</h3>
+    <div class="flow">
+      <div class="flow-box">HTTP Data</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box">+ L4 Header → Segment</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box">+ IP Header → Packet</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box">+ Eth Hdr + FCS → Frame</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box" style="color:var(--p1)">Bits on wire</div>
+    </div>
+
+    <div class="tip"><strong>Key takeaway:</strong> IP addresses are "end-to-end" — they identify the original source and final destination. MAC addresses are "hop-to-hop" — they change at every router.</div>
+
+    <div class="script-toggle" onclick="toggleScript('s1')">
+      <button class="script-toggle-btn" id="s1-btn">▶ Show Script</button>
+      <span class="script-toggle-label">Presentation script (2 min)</span>
+    </div>
+    <div class="script-collapsible" id="s1">
+      <div class="script-block">
+        <div class="script-label">🎤 What to say — Phase 1: Source Packaging</div>
+        <div class="script-text">
+          <span class="action">[Point to PC-Accounting on the diagram]</span><br><br>
+          "I'm responsible for Phase 1 — Source Packaging. This is where the data begins its journey, starting at the PC-Accounting host.<br><br>
+          The user wants to access the web server, so a <span class="emphasis">HTTP request</span> is generated at the Application layer. As that data moves <span class="emphasis">down the OSI stack</span>, each layer wraps it with its own header — this process is called <span class="emphasis">encapsulation</span>.<br><br>
+          <span class="action">[Trace down with your finger: App → Transport → Network → Data Link → Physical]</span><br><br>
+          At Layer 4, the Transport layer adds a header containing port numbers, turning the data into a <span class="emphasis">segment</span>. At Layer 3, the Network layer adds an <span class="emphasis">IPv4 header</span> — this is where the source IP 192.168.10.10 and destination IP 172.16.1.99 are stamped. These IP addresses will remain unchanged for the entire journey.<br><br>
+          At Layer 2, the Data Link layer wraps the packet into an <span class="emphasis">Ethernet frame</span> — adding a header with source MAC AA-AA and destination MAC <span class="emphasis">BB-BB, which is R1's interface</span>, not the web server. We address it to the router because the destination is on a different network. A FCS trailer is also added for error detection.<br><br>
+          Finally, Layer 1 converts the entire frame into <span class="emphasis">bits</span> — electrical signals — and transmits them onto the wire toward the switch and then R1."
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PHASE 2 -->
+<div id="phase2" class="phase ph2">
+  <div class="phase-header">
+    <span class="phase-badge">Phase 2</span>
+    <h2>Local Discovery — Is it local or remote? ARP for the gateway.</h2>
+    <span class="sub">2 min</span>
+  </div>
+  <div class="phase-body">
+    <h3>Step 1 — Determine local vs remote</h3>
+    <div class="code">
+      <span class="label">PC IP:        </span><span class="val">192.168.10.10 /24  </span><span class="arrow">→ Network: </span><span class="val">192.168.10.0</span><br>
+      <span class="label">Destination:  </span><span class="val">172.16.1.99        </span><span class="arrow">→ Network: </span><span class="val">172.16.1.0</span><br>
+      <span class="hi">Different network prefix</span><span class="label"> → PC cannot reach destination directly</span><br>
+      <span class="ok">→ PC sends to Default Gateway: 192.168.10.1</span>
+    </div>
+
+    <h3>Step 2 — Check ARP table for gateway's MAC</h3>
+    <ul>
+      <li>PC looks up <strong>192.168.10.1</strong> in its ARP cache</li>
+      <li><strong>Hit</strong> → use the cached MAC address → proceed to build frame</li>
+      <li><strong>Miss</strong> → must send an ARP Request first</li>
+    </ul>
+
+    <h3>ARP Request (broadcast)</h3>
+    <div class="code">
+      <span class="label">Dst MAC:  </span><span class="hi">FF-FF-FF-FF-FF-FF</span><span class="label">  (broadcast — all devices on the LAN receive this)</span><br>
+      <span class="label">Src MAC:  </span><span class="val">AA-AA</span><br>
+      <span class="label">Payload:  </span><span class="val">"Who has 192.168.10.1? Tell 192.168.10.10"</span>
+    </div>
+
+    <h3>ARP Reply (unicast — from R1 back to PC)</h3>
+    <div class="code">
+      <span class="label">Dst MAC: </span><span class="val">AA-AA</span><span class="label">  Src MAC: </span><span class="val">BB-BB</span><br>
+      <span class="label">Payload: </span><span class="val">"192.168.10.1 is at BB-BB"</span><br>
+      <span class="ok">PC stores mapping in ARP table → now builds the frame</span>
+    </div>
+
+    <h3>ARP table rules</h3>
+    <ul>
+      <li>Maps <strong>IP address ↔ MAC address</strong></li>
+      <li>Destination on <strong>same subnet</strong>: ARP for the <strong>destination's IP</strong></li>
+      <li>Destination on <strong>remote network</strong>: ARP for the <strong>default gateway's IP</strong></li>
+      <li>ARP broadcasts are NOT forwarded by routers — they stay on the local subnet</li>
+    </ul>
+
+    <h3>Resulting frame (leaving the PC)</h3>
+    <div class="code">
+      <span class="label">Src MAC: </span><span class="val">AA-AA</span><span class="label">  |  Dst MAC: </span><span class="val">BB-BB</span><span class="label">  (router's MAC)</span><br>
+      <span class="label">Src IP:  </span><span class="val">192.168.10.10</span><span class="label">  |  Dst IP: </span><span class="val">172.16.1.99</span>
+    </div>
+
+    <div class="tip"><strong>Key point:</strong> The PC uses the router's MAC as the destination MAC — not the web server's MAC. The packet is handed off to the router to continue the journey.</div>
+
+    <div class="script-toggle" onclick="toggleScript('s2')">
+      <button class="script-toggle-btn" id="s2-btn">▶ Show Script</button>
+      <span class="script-toggle-label">Presentation script (2 min)</span>
+    </div>
+    <div class="script-collapsible" id="s2">
+      <div class="script-block">
+        <div class="script-label">🎤 What to say — Phase 2: Local Discovery</div>
+        <div class="script-text">
+          <span class="action">[Point to PC-Accounting on the diagram]</span><br><br>
+          "I'm covering Phase 2 — Local Discovery. Before the PC can send anything, it needs to figure out where to send it and how to address the frame.<br><br>
+          The PC compares its own IP address — 192.168.10.10 with subnet mask /24 — against the destination IP 172.16.1.99. <span class="emphasis">The network prefixes don't match</span>, so the PC knows the destination is on a remote network. It cannot reach it directly — it must go through its <span class="emphasis">default gateway, which is R1 at 192.168.10.1</span>.<br><br>
+          <span class="action">[Point to R1 on the diagram]</span><br><br>
+          Now the PC needs R1's MAC address to build the Ethernet frame. It checks its <span class="emphasis">ARP table</span>. If there's no entry for 192.168.10.1, the PC sends an <span class="emphasis">ARP Request — a broadcast</span> with destination MAC FF-FF-FF-FF-FF-FF. Every device on the LAN receives this, but only R1 — the owner of 192.168.10.1 — replies.<br><br>
+          R1 sends back a <span class="emphasis">unicast ARP Reply</span> with its MAC address BB-BB. The PC stores this in its ARP table and can now build the frame.<br><br>
+          The resulting frame leaves the PC addressed like this: source MAC AA-AA, <span class="emphasis">destination MAC BB-BB</span> — the router — and the IP packet inside still carries the original source and destination IPs unchanged. The frame is then sent onto the local network toward R1."
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PHASE 3 -->
+<div id="phase3" class="phase ph3">
+  <div class="phase-header">
+    <span class="phase-badge">Phase 3</span>
+    <h2>Gateway Transition — De-encap → Route Lookup → Re-encap</h2>
+    <span class="sub">2 min</span>
+  </div>
+  <div class="phase-body">
+    <h3>Step 1 — R1 receives the frame on G0/0/0</h3>
+    <ul>
+      <li>NIC checks Dst MAC = <strong>BB-BB</strong> ✓ matches R1's interface → accept</li>
+      <li><strong>De-encapsulation</strong>: strips the Ethernet header &amp; FCS trailer</li>
+      <li>Exposes the IPv4 packet — reads Dst IP: <span style="color:var(--p3)">172.16.1.99</span></li>
+    </ul>
+
+    <h3>Step 2 — Routing table lookup</h3>
+    <div class="code">
+      <span class="label">Looking up: </span><span class="val">172.16.1.99</span><br>
+      <span class="ok">Match: 172.16.1.0/24 → next-hop 10.1.1.2 via interface S0/1/0</span><br>
+      <span class="hi">TTL decremented: </span><span class="val">128 → 127</span>
+    </div>
+
+    <h3>Step 3 — Re-encapsulation for WAN link (R1 → R2)</h3>
+    <div class="code">
+      <span class="label">NEW Src MAC: </span><span class="val">CC-CC</span><span class="label">  (R1 S0/1/0)</span><br>
+      <span class="label">NEW Dst MAC: </span><span class="val">DD-DD</span><span class="label">  (R2 S0/1/0)</span><br>
+      <span class="label">IP unchanged: Src </span><span class="val">192.168.10.10</span><span class="label"> → Dst </span><span class="val">172.16.1.99</span>
+    </div>
+
+    <h3>Step 4 — R2 repeats the process</h3>
+    <div class="code">
+      <span class="label">R2 strips old L2, reads Dst IP </span><span class="val">172.16.1.99</span><br>
+      <span class="ok">Match: 172.16.1.0/24 directly connected on G0/0/0</span><br>
+      <span class="label">R2 ARPs for 172.16.1.99 → reply: MAC </span><span class="val">22-22</span><br>
+      <span class="label">NEW Src MAC: </span><span class="val">11-11</span><span class="label">  (R2 G0/0/0)</span><br>
+      <span class="label">NEW Dst MAC: </span><span class="val">22-22</span><span class="label">  (Web-Server NIC)</span>
+    </div>
+
+    <h3>What changes vs what stays the same</h3>
+    <table class="kv">
+      <tr><td>L2 Src/Dst MAC</td><td><strong>Changes at every router hop</strong> — local link addressing only</td></tr>
+      <tr><td>L3 Src/Dst IP</td><td><strong>Stays the same</strong> the entire end-to-end journey</td></tr>
+      <tr><td>TTL</td><td><strong>Decremented by 1</strong> at every router; at 0 → packet discarded + ICMP Time Exceeded sent</td></tr>
+    </table>
+
+    <div class="tip"><strong>Router's 4 L2 functions at each hop:</strong> (1) Accept frame from incoming interface → (2) De-encapsulate L2 header → (3) Consult routing table + re-encapsulate with new L2 addresses → (4) Forward new frame out correct interface.</div>
+
+    <div class="script-toggle" onclick="toggleScript('s3')">
+      <button class="script-toggle-btn" id="s3-btn">▶ Show Script</button>
+      <span class="script-toggle-label">Presentation script (2 min)</span>
+    </div>
+    <div class="script-collapsible" id="s3">
+      <div class="script-block">
+        <div class="script-label">🎤 What to say — Phase 3: The Gateway Transition</div>
+        <div class="script-text">
+          <span class="action">[Point to R1 on the diagram]</span><br><br>
+          "I'm covering Phase 3 — the Gateway Transition. This is where the router takes the frame from the local LAN and forwards it toward the destination network.<br><br>
+          The frame arrives at R1's G0/0/0 interface. R1's NIC checks the destination MAC — it's BB-BB, which matches this interface, so R1 <span class="emphasis">accepts the frame</span>. It then <span class="emphasis">de-encapsulates</span> the Ethernet header and trailer, exposing the IPv4 packet inside.<br><br>
+          <span class="action">[Point to the packet's destination IP]</span><br><br>
+          R1 reads the <span class="emphasis">destination IP: 172.16.1.99</span> and looks it up in its <span class="emphasis">routing table</span>. It finds a match — the 172.16.1.0/24 network is reachable via R2 at 10.1.1.2, out of interface S0/1/0. R1 also <span class="emphasis">decrements the TTL</span> by 1.<br><br>
+          R1 now <span class="emphasis">re-encapsulates</span> the same IP packet into a brand new Ethernet frame for the WAN link — with a new source MAC CC-CC and destination MAC DD-DD. Notice the IP addresses inside have not changed at all.<br><br>
+          <span class="action">[Point to R2 on the diagram]</span><br><br>
+          When the frame reaches R2, the exact same process repeats — R2 de-encapsulates, looks up 172.16.1.99, finds it directly connected on G0/0/0, ARPs for the web server's MAC 22-22, and re-encapsulates the packet one final time before forwarding it to the server."
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PHASE 4 -->
+<div id="phase4" class="phase ph4">
+  <div class="phase-header">
+    <span class="phase-badge">Phase 4</span>
+    <h2>Arrival &amp; De-encapsulation — Up the Stack to the App</h2>
+    <span class="sub">2 min</span>
+  </div>
+  <div class="phase-body">
+    <h3>Step 1 — Physical Layer (Layer 1)</h3>
+    <ul>
+      <li>Web-server NIC receives bits from the wire/wireless medium</li>
+      <li>Converts signals back into the binary frame → passes up to Layer 2</li>
+    </ul>
+
+    <h3>Step 2 — Data Link Layer (Layer 2) — NIC check</h3>
+    <ul>
+      <li>NIC reads Dst MAC in the frame header = <strong>22-22</strong></li>
+      <li>Compares against its own MAC stored in RAM → <strong>Match ✓ → accept</strong></li>
+      <li>If no match → frame is <strong>silently discarded</strong></li>
+      <li>Checks <strong>FCS/CRC trailer</strong> for transmission errors → if corrupted, discard</li>
+      <li>Strips Ethernet header + trailer → passes <strong>IPv4 packet</strong> up</li>
+    </ul>
+
+    <h3>Step 3 — Network Layer (Layer 3)</h3>
+    <ul>
+      <li>Reads Dst IP = <strong>172.16.1.99</strong> → matches this host ✓</li>
+      <li>Reads <strong>Protocol field</strong> (e.g. 0x06 = TCP) → knows what's inside</li>
+      <li>Strips IP header → passes <strong>segment</strong> up to Transport layer</li>
+    </ul>
+
+    <h3>Step 4 — Transport Layer (Layer 4)</h3>
+    <ul>
+      <li>Reads <strong>destination port</strong> (e.g. port 80 = HTTP)</li>
+      <li>Strips transport header → passes <strong>application data</strong> up</li>
+      <li><em>For this assessment: no TCP/UDP mechanism details required — just know it de-encapsulates and delivers data up.</em></li>
+    </ul>
+
+    <h3>Step 5 — Application Layer (Layer 7)</h3>
+    <ul>
+      <li>Web server process receives the <strong>HTTP GET request</strong></li>
+      <li>Processes the request, generates <strong>HTTP response</strong></li>
+      <li>Response re-encapsulated and sent back down the stack toward PC</li>
+    </ul>
+
+    <h3>De-encapsulation flow</h3>
+    <div class="flow">
+      <div class="flow-box" style="color:var(--p4)">Bits (L1)</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box">Frame (L2)</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box">Packet (L3)</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box">Segment (L4)</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box">Data (App)</div>
+    </div>
+
+    <div class="tip"><strong>Key phrase for presentation:</strong> "The NIC checks the destination MAC. On match, it accepts the frame, verifies integrity with FCS, and passes the payload up the OSI stack — stripping the header at each layer until the application receives the original data."</div>
+
+    <div class="script-toggle" onclick="toggleScript('s4')">
+      <button class="script-toggle-btn" id="s4-btn">▶ Show Script</button>
+      <span class="script-toggle-label">Presentation script (2 min)</span>
+    </div>
+    <div class="script-collapsible" id="s4">
+      <div class="script-block">
+        <div class="script-label">🎤 What to say — Phase 4: Arrival & De-encapsulation</div>
+        <div class="script-text">
+          <span class="action">[Point to the Web-Server on the diagram]</span><br><br>
+          "I'm covering Phase 4 — Arrival and De-encapsulation. This is the reverse of Phase 1: the frame arrives at the web server and the data is unwrapped back up the OSI stack.<br><br>
+          The frame arrives as <span class="emphasis">bits on the wire</span>. The Physical layer converts those signals back into a binary frame and passes it up to Layer 2.<br><br>
+          At Layer 2, the server's <span class="emphasis">NIC checks the destination MAC — 22-22</span>. It compares this against its own hardware MAC address stored in RAM. They match, so the frame is <span class="emphasis">accepted</span>. The NIC also verifies the <span class="emphasis">FCS trailer</span> — if the CRC doesn't match, the frame is discarded as corrupted. Otherwise, the Ethernet header and trailer are stripped, and the IPv4 packet is passed up.<br><br>
+          <span class="action">[Trace upward on the diagram]</span><br><br>
+          At Layer 3, IP checks the <span class="emphasis">destination IP — 172.16.1.99</span> — confirms it matches this host, reads the Protocol field to identify TCP, strips the IP header, and passes the segment up to Layer 4.<br><br>
+          Layer 4 reads the <span class="emphasis">destination port — port 80</span> for HTTP — strips its header, and delivers the raw application data up to Layer 7.<br><br>
+          Finally, the <span class="emphasis">web server application</span> receives the HTTP GET request, processes it, and generates an HTTP response — which then travels back down the stack and is sent all the way back to the original PC through the same routing process in reverse."
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function toggleScript(id) {
+  const el = document.getElementById(id);
+  const btn = document.getElementById(id + '-btn');
+  const isOpen = el.classList.contains('open');
+  el.classList.toggle('open', !isOpen);
+  btn.textContent = isOpen ? '▶ Show Script' : '▼ Hide Script';
+}
+</script>
+
+<!-- Q&A BANK -->
+<div id="qa" class="qa-section">
+  <div class="qa-header">⚡ Q&amp;A Bank — Likely Tutor Questions &amp; Model Answers</div>
+  <div class="qa-body">
+
+    <div class="qa-item">
+      <div class="q">Does the PC try to find the web server's MAC address directly?</div>
+      <div class="a">No. The PC compares its IP and subnet mask with the destination (172.16.1.99). The network prefixes differ, so the PC recognises it as a remote host and sends the frame to its default gateway (192.168.10.1) instead.</div>
+    </div>
+
+    <div class="qa-item">
+      <div class="q">If the PC doesn't know the router's MAC yet, how does it get it?</div>
+      <div class="a">It broadcasts an ARP Request to FF-FF-FF-FF-FF-FF saying "Who has 192.168.10.1?". Only R1 (owning that IP) replies unicast with its MAC BB-BB. The PC stores this in its ARP table and then builds the frame.</div>
+    </div>
+
+    <div class="qa-item">
+      <div class="q">When the frame hits R1, what does the router do with the MAC addresses?</div>
+      <div class="a">R1 strips the old L2 header (Src: AA-AA, Dst: BB-BB). It reads the L3 destination IP, performs a routing table lookup, then creates a brand new Ethernet frame for the next link — with new source and destination MAC addresses (CC-CC and DD-DD) for that segment.</div>
+    </div>
+
+    <div class="qa-item">
+      <div class="q">Why do MAC addresses change at every hop, but IP addresses don't?</div>
+      <div class="a">MAC addresses are Layer 2 (local link) identifiers — they only have meaning on a single network segment. Each new link is essentially a new "envelope." IP addresses are Layer 3 end-to-end identifiers that carry the original source and final destination across the entire routed path.</div>
+    </div>
+
+    <div class="qa-item">
+      <div class="q">What if the destination IP was changed to 192.168.10.50 instead?</div>
+      <div class="a">The PC would recognise it as being on the same /24 subnet. It would ARP directly for 192.168.10.50's MAC and place that MAC in the Dst MAC field — no router (default gateway) would be involved in the Layer 2 forwarding.</div>
+    </div>
+
+    <div class="qa-item">
+      <div class="q">What happens if TTL reaches 0?</div>
+      <div class="a">The router that decrements TTL to zero discards the packet and sends an ICMP "Time Exceeded" message back to the source IP. This prevents packets from looping forever in a network.</div>
+    </div>
+
+    <div class="qa-item">
+      <div class="q">How does the web server's NIC know the frame is for it?</div>
+      <div class="a">The NIC compares the incoming frame's destination MAC (22-22) against its own hardware MAC address stored in RAM. A match means the frame is accepted and passed up the stack. No match means the frame is silently discarded at Layer 2.</div>
+    </div>
+
+    <div class="qa-item">
+      <div class="q">What is the Protocol field in the IPv4 header used for?</div>
+      <div class="a">It identifies the Layer 4 protocol carried inside the packet — for example 0x06 = TCP, 0x11 = UDP, 0x01 = ICMP. When Layer 3 de-encapsulates the packet, it reads this field to pass the segment to the correct transport-layer handler.</div>
+    </div>
+
+    <div class="qa-item">
+      <div class="q">What is the EtherType field in the Ethernet frame?</div>
+      <div class="a">It identifies the Layer 3 protocol in the frame's payload — 0x0800 for IPv4, 0x86DD for IPv6, 0x0806 for ARP. The receiving NIC uses this to route the payload to the correct protocol handler after stripping the frame header.</div>
+    </div>
+
+    <div class="qa-item">
+      <div class="q">What is the FCS / CRC trailer for?</div>
+      <div class="a">The Frame Check Sequence is computed by the sender over the frame contents and appended as a trailer. The receiver recalculates it upon arrival. If the values differ, the frame was corrupted in transit and is discarded. This is Layer 2 error detection — not correction.</div>
+    </div>
+
+    <div class="qa-item">
+      <div class="q">What is the difference between a unicast, broadcast, and multicast MAC?</div>
+      <div class="a">Unicast MAC is a unique address for one specific device. Broadcast (FF-FF-FF-FF-FF-FF) is received and processed by all devices on the LAN — used by ARP. Multicast (starting 01-00-5E for IPv4) is received only by devices that have joined that specific multicast group. Broadcasts and multicasts are not forwarded by routers.</div>
+    </div>
+
+  </div>
+</div>
+
+<footer>IT1x13 · Week 8 · The Packet's Journey · Topics 2–7 · Layers 1–3</footer>
+</div>
+</body>
+</html>
