@@ -79,6 +79,9 @@
   .script-toggle-label{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
   .script-collapsible{display:none}
   .script-collapsible.open{display:block}
+  .sc-tab{font-family:var(--mono);font-size:11px;padding:.3rem .9rem;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer;transition:all .15s;white-space:nowrap}
+  .sc-tab:hover{border-color:var(--warn);color:var(--warn)}
+  .sc-tab.active{background:#1a1500;border-color:var(--warn);color:var(--warn)}
 </style>
 </head>
 <body>
@@ -106,29 +109,215 @@
 <div id="scenario" class="phase">
   <div class="phase-header">
     <span class="phase-badge" style="background:#1a1500;color:var(--warn)">SCENARIO</span>
-    <h2>SME Web Portal Access (Sample Reference)</h2>
+    <h2>Practice Scenarios — Select to Study</h2>
   </div>
   <div class="phase-body">
-    <h3>Device Table</h3>
-    <table class="scenario-table">
-      <thead><tr><th>Device</th><th>Role</th><th>IPv4 Address</th><th>MAC</th></tr></thead>
-      <tbody>
-        <tr class="src"><td>PC-Accounting</td><td>Source Host</td><td>192.168.10.10/24</td><td>AA-AA</td></tr>
-        <tr><td>R1 G0/0/0</td><td>LAN Interface (Default GW)</td><td>192.168.10.1/24</td><td>BB-BB</td></tr>
-        <tr><td>R1 S0/1/0</td><td>WAN Interface</td><td>10.1.1.1/30</td><td>CC-CC</td></tr>
-        <tr><td>R2 S0/1/0</td><td>WAN Interface</td><td>10.1.1.2/30</td><td>DD-DD</td></tr>
-        <tr><td>R2 G0/0/0</td><td>LAN Interface</td><td>172.16.1.1/24</td><td>11-11</td></tr>
-        <tr class="dst"><td>Web-Server</td><td>Destination</td><td>172.16.1.99/24</td><td>22-22</td></tr>
-      </tbody>
-    </table>
-    <h3>Quick Network Check</h3>
-    <div class="code">
-      <span class="label">PC subnet:     </span><span class="val">192.168.10.0/24</span><br>
-      <span class="label">Server subnet: </span><span class="val">172.16.1.0/24</span><br>
-      <span class="arrow">→ </span><span class="hi">DIFFERENT networks</span><span class="label"> — default gateway (R1 = 192.168.10.1) must be used</span>
+
+    <!-- Scenario Tabs -->
+    <div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1.2rem" id="scenario-tabs">
+      <button class="sc-tab active" onclick="showScenario(0)" id="tab-0">1 · SME Web Portal</button>
+      <button class="sc-tab" onclick="showScenario(1)" id="tab-1">2 · MC Server Join</button>
+      <button class="sc-tab" onclick="showScenario(2)" id="tab-2">3 · File Share (Same LAN)</button>
+      <button class="sc-tab" onclick="showScenario(3)" id="tab-3">4 · DNS Lookup</button>
+      <button class="sc-tab" onclick="showScenario(4)" id="tab-4">5 · VoIP Call</button>
     </div>
-  </div>
-</div>
+
+    <!-- ── SCENARIO 1 ── -->
+    <div class="sc-panel" id="sc-0">
+      <div style="font-family:var(--mono);font-size:11px;color:var(--warn);letter-spacing:1px;text-transform:uppercase;margin-bottom:.7rem">Scenario 1 — SME Web Portal Access</div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:.9rem">A PC in the accounting department accesses an internal web server hosted on a separate network segment via two routers.</p>
+      <h3>Device Table</h3>
+      <table class="scenario-table">
+        <thead><tr><th>Device</th><th>Role</th><th>IPv4 Address</th><th>MAC</th></tr></thead>
+        <tbody>
+          <tr class="src"><td>PC-Accounting</td><td>Source Host</td><td>192.168.10.10/24</td><td>AA-AA</td></tr>
+          <tr><td>R1 G0/0/0</td><td>LAN Interface (Default GW)</td><td>192.168.10.1/24</td><td>BB-BB</td></tr>
+          <tr><td>R1 S0/1/0</td><td>WAN Interface</td><td>10.1.1.1/30</td><td>CC-CC</td></tr>
+          <tr><td>R2 S0/1/0</td><td>WAN Interface</td><td>10.1.1.2/30</td><td>DD-DD</td></tr>
+          <tr><td>R2 G0/0/0</td><td>LAN Interface</td><td>172.16.1.1/24</td><td>11-11</td></tr>
+          <tr class="dst"><td>Web-Server</td><td>Destination</td><td>172.16.1.99/24</td><td>22-22</td></tr>
+        </tbody>
+      </table>
+      <h3>Quick Network Check</h3>
+      <div class="code">
+        <span class="label">PC subnet:     </span><span class="val">192.168.10.0/24</span><br>
+        <span class="label">Server subnet: </span><span class="val">172.16.1.0/24</span><br>
+        <span class="arrow">→ </span><span class="hi">DIFFERENT networks</span><span class="label"> — default gateway (R1 = 192.168.10.1) must be used</span>
+      </div>
+      <h3>Key Packet Details</h3>
+      <div class="code">
+        <span class="label">App protocol:  </span><span class="val">HTTP (port 80)</span><br>
+        <span class="label">L3 protocol:   </span><span class="val">IPv4 — Protocol field 0x06 (TCP)</span><br>
+        <span class="label">Dst MAC hop 1: </span><span class="val">BB-BB (R1 G0/0/0, not the web server)</span><br>
+        <span class="label">Dst MAC hop 2: </span><span class="val">22-22 (Web-Server NIC, set by R2)</span>
+      </div>
+      <div class="tip"><strong>Exam tip:</strong> The destination IP (172.16.1.99) never changes. Only MAC addresses change per hop. The PC ARPs for R1's MAC, not the server's.</div>
+    </div>
+
+    <!-- ── SCENARIO 2 ── -->
+    <div class="sc-panel" id="sc-1" style="display:none">
+      <div style="font-family:var(--mono);font-size:11px;color:var(--warn);letter-spacing:1px;text-transform:uppercase;margin-bottom:.7rem">Scenario 2 — User Connecting to a Minecraft Server</div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:.9rem">A home PC gamer connects to a Minecraft server hosted on a remote network. Traffic leaves via the home router and crosses an ISP link to the server's LAN.</p>
+      <h3>Device Table</h3>
+      <table class="scenario-table">
+        <thead><tr><th>Device</th><th>Role</th><th>IPv4 Address</th><th>MAC</th></tr></thead>
+        <tbody>
+          <tr class="src"><td>PC-Gamer</td><td>Source Host</td><td>192.168.1.50/24</td><td>AA-AA</td></tr>
+          <tr><td>Home-Router G0/0</td><td>Default Gateway (LAN side)</td><td>192.168.1.1/24</td><td>BB-BB</td></tr>
+          <tr><td>Home-Router G0/1</td><td>WAN/ISP Uplink</td><td>203.0.113.5/30</td><td>CC-CC</td></tr>
+          <tr><td>ISP-Router G0/1</td><td>ISP WAN Interface</td><td>203.0.113.6/30</td><td>DD-DD</td></tr>
+          <tr><td>ISP-Router G0/0</td><td>Server-Side LAN Interface</td><td>10.50.0.1/24</td><td>EE-EE</td></tr>
+          <tr class="dst"><td>MC-Server</td><td>Destination (Minecraft)</td><td>10.50.0.25/24</td><td>FF-FF</td></tr>
+        </tbody>
+      </table>
+      <h3>Quick Network Check</h3>
+      <div class="code">
+        <span class="label">PC subnet:         </span><span class="val">192.168.1.0/24</span><br>
+        <span class="label">MC Server subnet:  </span><span class="val">10.50.0.0/24</span><br>
+        <span class="arrow">→ </span><span class="hi">DIFFERENT networks</span><span class="label"> — default gateway (Home-Router = 192.168.1.1) must be used</span>
+      </div>
+      <h3>Key Packet Details</h3>
+      <div class="code">
+        <span class="label">App protocol:    </span><span class="val">Minecraft Java Edition (TCP port 25565)</span><br>
+        <span class="label">L3 protocol:     </span><span class="val">IPv4 — Protocol field 0x06 (TCP)</span><br>
+        <span class="label">Src IP (fixed):  </span><span class="val">192.168.1.50 — unchanged end-to-end</span><br>
+        <span class="label">Dst IP (fixed):  </span><span class="val">10.50.0.25 — unchanged end-to-end</span><br>
+        <span class="label">Dst MAC hop 1:   </span><span class="val">BB-BB (Home-Router LAN, not the MC server)</span><br>
+        <span class="label">Dst MAC hop 2:   </span><span class="val">FF-FF (MC-Server NIC, set by ISP-Router)</span>
+      </div>
+      <h3>ARP Behaviour</h3>
+      <ul>
+        <li>PC checks: is <strong>10.50.0.25</strong> on my subnet (192.168.1.0/24)? → <strong>No</strong></li>
+        <li>PC ARPs for the Home-Router's MAC (<strong>BB-BB</strong>) on the LAN segment</li>
+        <li>Home-Router strips L2 frame, reads destination IP, routes to ISP-Router via WAN link</li>
+        <li>ISP-Router ARPs for MC-Server's MAC (<strong>FF-FF</strong>) and delivers the final frame</li>
+      </ul>
+      <div class="tip"><strong>Exam tip:</strong> Port 25565 is the L4 destination port for Minecraft. In the exam, if asked "what port?", this is the answer — but you only need to know it adds port info to the segment, not TCP internals.</div>
+    </div>
+
+    <!-- ── SCENARIO 3 ── -->
+    <div class="sc-panel" id="sc-2" style="display:none">
+      <div style="font-family:var(--mono);font-size:11px;color:var(--warn);letter-spacing:1px;text-transform:uppercase;margin-bottom:.7rem">Scenario 3 — File Share Access (Same LAN, No Router)</div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:.9rem">A laptop on a campus LAN accesses a shared folder on a file server in the same subnet. No router is involved — traffic stays Layer 2 only.</p>
+      <h3>Device Table</h3>
+      <table class="scenario-table">
+        <thead><tr><th>Device</th><th>Role</th><th>IPv4 Address</th><th>MAC</th></tr></thead>
+        <tbody>
+          <tr class="src"><td>Laptop-User</td><td>Source Host</td><td>10.10.10.20/24</td><td>AA-AA</td></tr>
+          <tr><td>SW1</td><td>Layer 2 Switch (no IP needed)</td><td>—</td><td>(learns dynamically)</td></tr>
+          <tr class="dst"><td>File-Server</td><td>Destination</td><td>10.10.10.80/24</td><td>BB-BB</td></tr>
+        </tbody>
+      </table>
+      <h3>Quick Network Check</h3>
+      <div class="code">
+        <span class="label">Laptop subnet:       </span><span class="val">10.10.10.0/24</span><br>
+        <span class="label">File-Server subnet:  </span><span class="val">10.10.10.0/24</span><br>
+        <span class="ok">→ SAME network</span><span class="label"> — no default gateway needed. ARP directly for the File-Server.</span>
+      </div>
+      <h3>Key Packet Details</h3>
+      <div class="code">
+        <span class="label">App protocol:  </span><span class="val">SMB / Windows File Share (TCP port 445)</span><br>
+        <span class="label">L3 protocol:   </span><span class="val">IPv4 — Protocol field 0x06 (TCP)</span><br>
+        <span class="label">Src IP:        </span><span class="val">10.10.10.20</span><br>
+        <span class="label">Dst IP:        </span><span class="val">10.10.10.80</span><br>
+        <span class="label">Dst MAC:       </span><span class="val">BB-BB (File-Server directly — no router hop)</span>
+      </div>
+      <h3>ARP Behaviour (Same Subnet)</h3>
+      <ul>
+        <li>Laptop checks: is <strong>10.10.10.80</strong> on my subnet (10.10.10.0/24)? → <strong>Yes</strong></li>
+        <li>Laptop ARPs directly for <strong>10.10.10.80</strong> — broadcast sent on LAN</li>
+        <li>File-Server replies with its MAC <strong>BB-BB</strong></li>
+        <li>Laptop places <strong>BB-BB</strong> as Dst MAC — frame goes straight to File-Server via SW1</li>
+        <li>SW1 is Layer 2 only — it <strong>learns MAC addresses</strong> and forwards frames; it does NOT inspect IP headers</li>
+      </ul>
+      <div class="tip"><strong>Key difference from Scenario 1:</strong> When source and destination are on the same subnet, the PC ARPs for the <em>destination device's MAC directly</em> — not the default gateway. No router is needed.</div>
+    </div>
+
+    <!-- ── SCENARIO 4 ── -->
+    <div class="sc-panel" id="sc-3" style="display:none">
+      <div style="font-family:var(--mono);font-size:11px;color:var(--warn);letter-spacing:1px;text-transform:uppercase;margin-bottom:.7rem">Scenario 4 — DNS Lookup Before Web Browsing</div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:.9rem">Before a PC can load a website using a domain name, it must first resolve the name to an IP via a DNS server on a separate network segment — a two-phase packet journey.</p>
+      <h3>Device Table</h3>
+      <table class="scenario-table">
+        <thead><tr><th>Device</th><th>Role</th><th>IPv4 Address</th><th>MAC</th></tr></thead>
+        <tbody>
+          <tr class="src"><td>PC-Student</td><td>Source Host</td><td>172.16.5.10/24</td><td>AA-AA</td></tr>
+          <tr><td>R1 G0/0</td><td>Default Gateway (LAN)</td><td>172.16.5.1/24</td><td>BB-BB</td></tr>
+          <tr><td>R1 G0/1</td><td>WAN/Core Link</td><td>10.0.0.1/30</td><td>CC-CC</td></tr>
+          <tr><td>R2 G0/1</td><td>WAN/Core Link</td><td>10.0.0.2/30</td><td>DD-DD</td></tr>
+          <tr><td>R2 G0/0</td><td>DNS LAN Interface</td><td>172.16.100.1/24</td><td>EE-EE</td></tr>
+          <tr class="dst"><td>DNS-Server</td><td>Destination (Phase 1 of 2)</td><td>172.16.100.53/24</td><td>FF-FF</td></tr>
+        </tbody>
+      </table>
+      <h3>Quick Network Check</h3>
+      <div class="code">
+        <span class="label">PC subnet:         </span><span class="val">172.16.5.0/24</span><br>
+        <span class="label">DNS Server subnet: </span><span class="val">172.16.100.0/24</span><br>
+        <span class="arrow">→ </span><span class="hi">DIFFERENT networks</span><span class="label"> — default gateway (R1 = 172.16.5.1) must be used</span>
+      </div>
+      <h3>Key Packet Details</h3>
+      <div class="code">
+        <span class="label">App protocol:  </span><span class="val">DNS query (UDP port 53)</span><br>
+        <span class="label">L3 protocol:   </span><span class="val">IPv4 — Protocol field 0x11 (UDP)</span><br>
+        <span class="label">Dst IP:        </span><span class="val">172.16.100.53 (DNS Server)</span><br>
+        <span class="label">Dst MAC hop 1: </span><span class="val">BB-BB (R1 — default gateway)</span><br>
+        <span class="label">Dst MAC hop 2: </span><span class="val">FF-FF (DNS-Server NIC, set by R2)</span>
+      </div>
+      <h3>Two-Phase Journey</h3>
+      <ul>
+        <li><strong>Phase A:</strong> PC sends DNS query (UDP/53) to DNS-Server — full L1–L4 encapsulation, two router hops</li>
+        <li><strong>Phase B:</strong> DNS-Server replies with the resolved IP (e.g. 203.0.113.10) back to the PC</li>
+        <li>Only after Phase B does the PC build the <strong>actual HTTP request</strong> to the web server</li>
+        <li>Protocol field in IP header = <strong>0x11 (UDP)</strong> — DNS uses UDP, not TCP (important difference!)</li>
+      </ul>
+      <div class="tip"><strong>Exam tip:</strong> DNS uses <strong>UDP</strong>, not TCP — the Protocol field in the IPv4 header will be <strong>0x11</strong>, not 0x06. If the examiner asks about Protocol field for a DNS packet, say 0x11 (UDP/17).</div>
+    </div>
+
+    <!-- ── SCENARIO 5 ── -->
+    <div class="sc-panel" id="sc-4" style="display:none">
+      <div style="font-family:var(--mono);font-size:11px;color:var(--warn);letter-spacing:1px;text-transform:uppercase;margin-bottom:.7rem">Scenario 5 — VoIP Phone Call Between Office Branches</div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:.9rem">An IP phone at HQ places a call to an IP phone at a remote branch office. Voice data is carried via RTP over UDP across a routed WAN link.</p>
+      <h3>Device Table</h3>
+      <table class="scenario-table">
+        <thead><tr><th>Device</th><th>Role</th><th>IPv4 Address</th><th>MAC</th></tr></thead>
+        <tbody>
+          <tr class="src"><td>IP-Phone-HQ</td><td>Source Host (VoIP)</td><td>192.168.20.15/24</td><td>AA-AA</td></tr>
+          <tr><td>SW-HQ</td><td>Layer 2 Switch (Voice VLAN)</td><td>—</td><td>(learns dynamically)</td></tr>
+          <tr><td>R-HQ G0/0</td><td>Default Gateway (HQ LAN)</td><td>192.168.20.1/24</td><td>BB-BB</td></tr>
+          <tr><td>R-HQ G0/1</td><td>WAN Link HQ side</td><td>10.2.2.1/30</td><td>CC-CC</td></tr>
+          <tr><td>R-Branch G0/1</td><td>WAN Link Branch side</td><td>10.2.2.2/30</td><td>DD-DD</td></tr>
+          <tr><td>R-Branch G0/0</td><td>Branch LAN Interface</td><td>192.168.30.1/24</td><td>EE-EE</td></tr>
+          <tr class="dst"><td>IP-Phone-Branch</td><td>Destination (VoIP)</td><td>192.168.30.22/24</td><td>FF-FF</td></tr>
+        </tbody>
+      </table>
+      <h3>Quick Network Check</h3>
+      <div class="code">
+        <span class="label">HQ Phone subnet:     </span><span class="val">192.168.20.0/24</span><br>
+        <span class="label">Branch Phone subnet: </span><span class="val">192.168.30.0/24</span><br>
+        <span class="arrow">→ </span><span class="hi">DIFFERENT networks</span><span class="label"> — default gateway (R-HQ = 192.168.20.1) must be used</span>
+      </div>
+      <h3>Key Packet Details</h3>
+      <div class="code">
+        <span class="label">App protocol:   </span><span class="val">RTP (Real-time Transport Protocol) over UDP</span><br>
+        <span class="label">L3 protocol:    </span><span class="val">IPv4 — Protocol field 0x11 (UDP)</span><br>
+        <span class="label">Src IP:         </span><span class="val">192.168.20.15 (IP-Phone-HQ) — fixed end-to-end</span><br>
+        <span class="label">Dst IP:         </span><span class="val">192.168.30.22 (IP-Phone-Branch) — fixed end-to-end</span><br>
+        <span class="label">Dst MAC hop 1:  </span><span class="val">BB-BB (R-HQ G0/0 — default gateway)</span><br>
+        <span class="label">Dst MAC hop 2:  </span><span class="val">FF-FF (IP-Phone-Branch NIC, set by R-Branch)</span>
+      </div>
+      <h3>VoIP-Specific Notes</h3>
+      <ul>
+        <li>VoIP uses <strong>UDP</strong> (not TCP) — voice is delay-sensitive; dropped packets are preferable to retransmission delays</li>
+        <li>The IP header <strong>Protocol field = 0x11</strong> (UDP), same as DNS — both use UDP</li>
+        <li>Each voice RTP packet follows the same L1–L4 encapsulation process as any other packet</li>
+        <li>MAC addresses still change at <strong>each router hop</strong>; IP addresses stay constant throughout</li>
+        <li>A call setup protocol (e.g. SIP on TCP port 5060) runs separately before RTP voice packets flow</li>
+      </ul>
+      <div class="tip"><strong>Exam tip:</strong> VoIP is a great example where <strong>UDP</strong> is used instead of TCP at Layer 4. The Protocol field in the IPv4 header will be <strong>0x11</strong>. Voice packets are small and frequent — exactly the same packet journey as HTTP, just with a different L4 protocol and port.</div>
+    </div>
+
+  </div><!-- /phase-body -->
+</div><!-- /scenario -->
 
 <!-- PHASE 1 -->
 <div id="phase1" class="phase ph1">
@@ -433,6 +622,12 @@ function toggleScript(id) {
   const isOpen = el.classList.contains('open');
   el.classList.toggle('open', !isOpen);
   btn.textContent = isOpen ? '▶ Show Script' : '▼ Hide Script';
+}
+function showScenario(n) {
+  for (let i = 0; i < 5; i++) {
+    document.getElementById('sc-' + i).style.display = i === n ? '' : 'none';
+    document.getElementById('tab-' + i).classList.toggle('active', i === n);
+  }
 }
 </script>
 
