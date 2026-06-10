@@ -3,616 +3,940 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>IT1x13 — The Packet's Journey: Study Notes</title>
+<title>IT1x13 — 5 Scenarios + Notes</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap');
-  :root{--bg:#0d1117;--surface:#161b22;--surface2:#1c2330;--border:#30363d;--p1:#58a6ff;--p2:#3fb950;--p3:#f78166;--p4:#d2a8ff;--warn:#e3b341;--text:#e6edf3;--muted:#8b949e;--mono:'Space Mono',monospace;--sans:'DM Sans',sans-serif}
+  :root{
+    --bg:#0d1117;--surface:#161b22;--surface2:#1c2330;--border:#30363d;
+    --p1:#58a6ff;--p2:#3fb950;--p3:#f78166;--p4:#d2a8ff;--warn:#e3b341;
+    --text:#e6edf3;--muted:#8b949e;
+    --mono:'Space Mono',monospace;--sans:'DM Sans',sans-serif;
+  }
   *{box-sizing:border-box;margin:0;padding:0}
-  body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.7;padding:2rem 1rem 4rem}
-  .container{max-width:900px;margin:0 auto}
+  body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.7;padding:2rem 1rem 5rem}
+  .container{max-width:960px;margin:0 auto}
+
+  /* Header */
   header{border-bottom:2px solid var(--border);padding-bottom:1.5rem;margin-bottom:2.5rem}
   .tag{font-family:var(--mono);font-size:11px;color:var(--warn);letter-spacing:2px;text-transform:uppercase;margin-bottom:.4rem}
-  header h1{font-family:var(--mono);font-size:1.7rem;font-weight:700;line-height:1.2;color:#fff}
+  header h1{font-family:var(--mono);font-size:1.7rem;font-weight:700;color:#fff}
   header p{color:var(--muted);margin-top:.5rem;font-size:14px}
-  .alert{background:#1a1600;border:1px solid var(--warn);border-left:4px solid var(--warn);border-radius:6px;padding:1rem 1.2rem;margin-bottom:2rem;font-size:14px}
-  .alert strong{color:var(--warn)}
+
+  /* Nav */
   .nav{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:2.5rem}
   .nav a{font-family:var(--mono);font-size:12px;padding:.35rem .9rem;border-radius:20px;text-decoration:none;border:1px solid;transition:opacity .2s}
   .nav a:hover{opacity:.7}
-  .nav a.p1{color:var(--p1);border-color:var(--p1)}
-  .nav a.p2{color:var(--p2);border-color:var(--p2)}
-  .nav a.p3{color:var(--p3);border-color:var(--p3)}
-  .nav a.p4{color:var(--p4);border-color:var(--p4)}
-  .nav a.qa{color:var(--warn);border-color:var(--warn)}
-  .phase{background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:2rem;overflow:hidden}
-  .phase-header{display:flex;align-items:center;gap:1rem;padding:1rem 1.4rem;border-bottom:1px solid var(--border)}
-  .phase-badge{font-family:var(--mono);font-size:11px;font-weight:700;padding:.2rem .6rem;border-radius:4px;white-space:nowrap}
-  .ph1 .phase-badge{background:#0c2a4a;color:var(--p1)}
-  .ph2 .phase-badge{background:#0a2a15;color:var(--p2)}
-  .ph3 .phase-badge{background:#2a1510;color:var(--p3)}
-  .ph4 .phase-badge{background:#1e1230;color:var(--p4)}
-  .phase-header h2{font-family:var(--sans);font-size:1rem;font-weight:600;color:#fff}
-  .phase-header .sub{font-size:13px;color:var(--muted);margin-left:auto}
-  .phase-body{padding:1.4rem}
-  h3{font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:.7rem;margin-top:1.3rem}
+  .nav a.s1{color:#58a6ff;border-color:#58a6ff}
+  .nav a.s2{color:#3fb950;border-color:#3fb950}
+  .nav a.s3{color:#f78166;border-color:#f78166}
+  .nav a.s4{color:#d2a8ff;border-color:#d2a8ff}
+  .nav a.s5{color:#79c0ff;border-color:#79c0ff}
+  .nav a.notes{color:var(--warn);border-color:var(--warn)}
+
+  /* Section card */
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:2.5rem;overflow:hidden}
+  .card-header{display:flex;align-items:center;gap:1rem;padding:1rem 1.4rem;border-bottom:1px solid var(--border)}
+  .badge{font-family:var(--mono);font-size:11px;font-weight:700;padding:.25rem .7rem;border-radius:4px;white-space:nowrap}
+  .card-header h2{font-size:1rem;font-weight:600;color:#fff}
+  .card-header .sub{font-size:12px;color:var(--muted);margin-left:auto;font-family:var(--mono)}
+  .card-body{padding:1.4rem}
+
+  h3{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin:1.3rem 0 .6rem}
   h3:first-child{margin-top:0}
-  ul,ol{padding-left:1.3rem}
-  li{margin-bottom:.35rem;font-size:14px}
+  p.lead{font-size:14px;margin-bottom:.8rem;color:var(--text)}
+  ul{padding-left:1.3rem}
+  li{font-size:14px;margin-bottom:.3rem}
   li strong{color:#fff}
-  .code{font-family:var(--mono);font-size:12px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:.9rem 1.1rem;margin:.8rem 0;overflow-x:auto;line-height:1.8}
-  .code .label{color:var(--muted)}
-  .code .val{color:var(--p1)}
-  .code .arrow{color:var(--warn)}
-  .code .ok{color:var(--p2)}
-  .code .hi{color:var(--p3)}
-  .flow{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem;margin:.8rem 0}
-  .flow-box{font-family:var(--mono);font-size:11px;padding:.3rem .7rem;border-radius:4px;background:var(--surface2);border:1px solid var(--border);white-space:nowrap}
-  .flow-arrow{color:var(--muted);font-size:14px}
-  .kv{width:100%;border-collapse:collapse;margin:.8rem 0;font-size:13px}
-  .kv td{padding:.45rem .7rem;border-bottom:1px solid var(--border);vertical-align:top}
-  .kv td:first-child{font-family:var(--mono);font-size:12px;color:var(--warn);width:30%;white-space:nowrap}
-  .kv tr:last-child td{border-bottom:none}
-  .qa-section{background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:2rem;overflow:hidden}
-  .qa-header{background:#1a1500;border-bottom:1px solid var(--border);padding:.9rem 1.4rem;font-family:var(--mono);font-size:12px;color:var(--warn);text-transform:uppercase;letter-spacing:1px}
-  .qa-body{padding:1.4rem}
-  .qa-item{margin-bottom:1.2rem}
-  .qa-item:last-child{margin-bottom:0}
-  .q{font-size:14px;font-weight:600;color:#fff;margin-bottom:.4rem;padding-left:.9rem;border-left:3px solid var(--warn)}
-  .a{font-size:13.5px;color:var(--text);padding-left:.9rem;opacity:.85}
-  .scenario-table{width:100%;border-collapse:collapse;font-size:13px;margin:.8rem 0}
-  .scenario-table th{background:var(--surface2);font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);padding:.5rem .8rem;text-align:left;border-bottom:1px solid var(--border)}
-  .scenario-table td{font-family:var(--mono);font-size:12px;padding:.45rem .8rem;border-bottom:1px solid var(--border)}
-  .scenario-table tr:last-child td{border-bottom:none}
-  .scenario-table .src td{color:var(--p1)}
-  .scenario-table .dst td{color:var(--p2)}
-  .tip{background:#0a1f0a;border:1px solid #1e4d1e;border-radius:6px;padding:.8rem 1rem;font-size:13px;margin:.8rem 0;color:#b5d9b5}
+
+  /* Device table */
+  .dtable{width:100%;border-collapse:collapse;font-size:13px;margin:.8rem 0}
+  .dtable th{background:var(--surface2);font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);padding:.45rem .8rem;text-align:left;border-bottom:1px solid var(--border)}
+  .dtable td{font-family:var(--mono);font-size:12px;padding:.4rem .8rem;border-bottom:1px solid var(--border)}
+  .dtable tr:last-child td{border-bottom:none}
+
+  /* SVG diagram wrapper */
+  .diagram{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:1rem;margin:.8rem 0;overflow-x:auto}
+  .diagram svg{display:block;margin:0 auto}
+
+  /* Phase tabs */
+  .phases{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin:.8rem 0}
+  @media(max-width:600px){.phases{grid-template-columns:1fr}}
+  .phase-card{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.9rem 1rem}
+  .phase-card .ph-label{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem}
+  .phase-card p{font-size:13px;line-height:1.6}
+
+  /* Script block */
+  .script-toggle{display:flex;align-items:center;gap:.5rem;margin-top:1.2rem;cursor:pointer;user-select:none}
+  .script-btn{font-family:var(--mono);font-size:11px;background:#0c2a4a;color:var(--p1);border:1px solid var(--p1);border-radius:4px;padding:.2rem .7rem;cursor:pointer;transition:background .15s}
+  .script-btn:hover{background:#1a3f6a}
+  .script-lbl{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+  .script-body{display:none;margin-top:.8rem;background:#0e1a2e;border:1px solid #1e3a5f;border-left:4px solid var(--p1);border-radius:6px;padding:1rem 1.2rem}
+  .script-body.open{display:block}
+  .script-body .slabel{font-family:var(--mono);font-size:10px;color:var(--p1);letter-spacing:2px;text-transform:uppercase;margin-bottom:.7rem}
+  .script-body .stext{font-size:14px;line-height:1.9;color:#cce0ff}
+  .stext .act{color:var(--warn);font-style:italic;font-size:13px}
+  .stext .em{color:#fff;font-weight:600}
+
+  /* Key concept notes */
+  .notes-section{background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:2.5rem;overflow:hidden}
+  .notes-header{background:#1a1500;border-bottom:1px solid var(--border);padding:.9rem 1.4rem;font-family:var(--mono);font-size:12px;color:var(--warn);text-transform:uppercase;letter-spacing:1px}
+  .notes-body{padding:1.4rem}
+  .concept{margin-bottom:1.4rem;padding-bottom:1.4rem;border-bottom:1px solid var(--border)}
+  .concept:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+  .concept-title{font-family:var(--mono);font-size:13px;font-weight:700;color:#fff;margin-bottom:.4rem}
+  .concept-body{font-size:14px;line-height:1.7}
+  .concept-body .kw{color:var(--p1);font-weight:600}
+  .codeblock{font-family:var(--mono);font-size:12px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:.8rem 1rem;margin:.6rem 0;line-height:1.8;overflow-x:auto}
+  .codeblock .lbl{color:var(--muted)}
+  .codeblock .val{color:var(--p1)}
+  .codeblock .ok{color:var(--p2)}
+  .codeblock .hi{color:var(--p3)}
+  .codeblock .arrow{color:var(--warn)}
+  .tip{background:#0a1f0a;border:1px solid #1e4d1e;border-radius:6px;padding:.7rem 1rem;font-size:13px;margin:.6rem 0;color:#b5d9b5}
   .tip strong{color:var(--p2)}
+
   footer{text-align:center;font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border)}
-  .script-block{background:#0e1a2e;border:1px solid #1e3a5f;border-left:4px solid var(--p1);border-radius:6px;padding:1rem 1.2rem;margin:.8rem 0}
-  .script-label{font-family:var(--mono);font-size:10px;color:var(--p1);letter-spacing:2px;text-transform:uppercase;margin-bottom:.6rem}
-  .script-text{font-size:14px;line-height:1.85;color:#cce0ff}
-  .script-text .action{color:var(--warn);font-style:italic;font-size:13px}
-  .script-text .emphasis{color:#fff;font-weight:600}
-  .script-toggle{display:flex;align-items:center;gap:.5rem;cursor:pointer;margin-top:1.2rem;margin-bottom:.2rem;user-select:none}
-  .script-toggle-btn{font-family:var(--mono);font-size:11px;background:#0c2a4a;color:var(--p1);border:1px solid var(--p1);border-radius:4px;padding:.2rem .7rem;cursor:pointer;transition:background .15s}
-  .script-toggle-btn:hover{background:#1a3f6a}
-  .script-toggle-label{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
-  .script-collapsible{display:none}
-  .script-collapsible.open{display:block}
-  .sc-tab{font-family:var(--mono);font-size:11px;padding:.3rem .9rem;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer;transition:all .15s;white-space:nowrap}
-  .sc-tab:hover{border-color:var(--warn);color:var(--warn)}
-  .sc-tab.active{background:#1a1500;border-color:var(--warn);color:var(--warn)}
 </style>
 </head>
 <body>
 <div class="container">
+
 <header>
-  <div class="tag">IT1x13 · Week 8 Assignment 1 · 25%</div>
-  <h1>The Packet's Journey — Study Notes</h1>
-  <p>Compiled from Topics 2–7 · All four phases · Sample Q&amp;A bank</p>
+  <div class="tag">IT1x13 · Week 8 Assignment 1 · Scenario Bank</div>
+  <h1>5 Practice Scenarios + Key Concept Notes</h1>
+  <p>Network diagrams · Phase summaries · Presentation scripts · Concept notes for every scenario</p>
 </header>
 
-<div class="alert">
-  <strong>⚡ Key Rules:</strong> Role is randomised on the day — know ALL 4 phases. Notes allowed during 5-min prep only. No cheatsheets while presenting. No photos of the scenario table. Scope: Layers 1–3 (Layer 4: encapsulation/de-encapsulation only, no TCP/UDP internals).
-</div>
-
 <div class="nav">
-  <a href="#scenario" class="qa">Sample Scenario</a>
-  <a href="#phase1" class="p1">Phase 1: Source Packaging</a>
-  <a href="#phase2" class="p2">Phase 2: Local Discovery</a>
-  <a href="#phase3" class="p3">Phase 3: Gateway Transition</a>
-  <a href="#phase4" class="p4">Phase 4: Arrival &amp; De-encap</a>
-  <a href="#qa" class="qa">Q&amp;A Bank</a>
+  <a href="#s1" class="s1">① Tablet → DB Server</a>
+  <a href="#s2" class="s2">② Laptop → File Server</a>
+  <a href="#s3" class="s3">③ PC → Web Server (3 routers)</a>
+  <a href="#s4" class="s4">④ Phone → Email Server</a>
+  <a href="#s5" class="s5">⑤ PC → FTP Server (same LAN)</a>
+  <a href="#notes" class="notes">📖 Concept Notes</a>
 </div>
 
-<!-- SCENARIO -->
-<div id="scenario" class="phase">
-  <div class="phase-header">
-    <span class="phase-badge" style="background:#1a1500;color:var(--warn)">SCENARIO</span>
-    <h2>Practice Scenarios — Select to Study</h2>
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SCENARIO 1                                              -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="s1" class="card">
+  <div class="card-header">
+    <span class="badge" style="background:#0c2a4a;color:#58a6ff">Scenario 1</span>
+    <h2>Sales Tablet → Router 1 → Router 2 → DB Server</h2>
+    <span class="sub">Your original scenario</span>
   </div>
-  <div class="phase-body">
+  <div class="card-body">
+    <p class="lead">A salesperson keys in sales data on a tablet. The data must reach the DB Server on a remote network.</p>
 
-    <!-- Scenario Tabs -->
-    <div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1.2rem" id="scenario-tabs">
-      <button class="sc-tab active" onclick="showScenario(0)" id="tab-0">1 · SME Web Portal</button>
-      <button class="sc-tab" onclick="showScenario(1)" id="tab-1">2 · MC Server Join</button>
-      <button class="sc-tab" onclick="showScenario(2)" id="tab-2">3 · File Share (Same LAN)</button>
-      <button class="sc-tab" onclick="showScenario(3)" id="tab-3">4 · DNS Lookup</button>
-      <button class="sc-tab" onclick="showScenario(4)" id="tab-4">5 · VoIP Call</button>
-    </div>
-
-    <!-- ── SCENARIO 1 ── -->
-    <div class="sc-panel" id="sc-0">
-      <div style="font-family:var(--mono);font-size:11px;color:var(--warn);letter-spacing:1px;text-transform:uppercase;margin-bottom:.7rem">Scenario 1 — SME Web Portal Access</div>
-      <p style="font-size:13px;color:var(--muted);margin-bottom:.9rem">A PC in the accounting department accesses an internal web server hosted on a separate network segment via two routers.</p>
-      <h3>Device Table</h3>
-      <table class="scenario-table">
-        <thead><tr><th>Device</th><th>Role</th><th>IPv4 Address</th><th>MAC</th></tr></thead>
-        <tbody>
-          <tr class="src"><td>PC-Accounting</td><td>Source Host</td><td>192.168.10.10/24</td><td>AA-AA</td></tr>
-          <tr><td>R1 G0/0/0</td><td>LAN Interface (Default GW)</td><td>192.168.10.1/24</td><td>BB-BB</td></tr>
-          <tr><td>R1 S0/1/0</td><td>WAN Interface</td><td>10.1.1.1/30</td><td>CC-CC</td></tr>
-          <tr><td>R2 S0/1/0</td><td>WAN Interface</td><td>10.1.1.2/30</td><td>DD-DD</td></tr>
-          <tr><td>R2 G0/0/0</td><td>LAN Interface</td><td>172.16.1.1/24</td><td>11-11</td></tr>
-          <tr class="dst"><td>Web-Server</td><td>Destination</td><td>172.16.1.99/24</td><td>22-22</td></tr>
-        </tbody>
-      </table>
-      <h3>Quick Network Check</h3>
-      <div class="code">
-        <span class="label">PC subnet:     </span><span class="val">192.168.10.0/24</span><br>
-        <span class="label">Server subnet: </span><span class="val">172.16.1.0/24</span><br>
-        <span class="arrow">→ </span><span class="hi">DIFFERENT networks</span><span class="label"> — default gateway (R1 = 192.168.10.1) must be used</span>
-      </div>
-      <h3>Key Packet Details</h3>
-      <div class="code">
-        <span class="label">App protocol:  </span><span class="val">HTTP (port 80)</span><br>
-        <span class="label">L3 protocol:   </span><span class="val">IPv4 — Protocol field 0x06 (TCP)</span><br>
-        <span class="label">Dst MAC hop 1: </span><span class="val">BB-BB (R1 G0/0/0, not the web server)</span><br>
-        <span class="label">Dst MAC hop 2: </span><span class="val">22-22 (Web-Server NIC, set by R2)</span>
-      </div>
-      <div class="tip"><strong>Exam tip:</strong> The destination IP (172.16.1.99) never changes. Only MAC addresses change per hop. The PC ARPs for R1's MAC, not the server's.</div>
-    </div>
-
-    <!-- ── SCENARIO 2 ── -->
-    <div class="sc-panel" id="sc-1" style="display:none">
-      <div style="font-family:var(--mono);font-size:11px;color:var(--warn);letter-spacing:1px;text-transform:uppercase;margin-bottom:.7rem">Scenario 2 — User Connecting to a Minecraft Server</div>
-      <p style="font-size:13px;color:var(--muted);margin-bottom:.9rem">A home PC gamer connects to a Minecraft server hosted on a remote network. Traffic leaves via the home router and crosses an ISP link to the server's LAN.</p>
-      <h3>Device Table</h3>
-      <table class="scenario-table">
-        <thead><tr><th>Device</th><th>Role</th><th>IPv4 Address</th><th>MAC</th></tr></thead>
-        <tbody>
-          <tr class="src"><td>PC-Gamer</td><td>Source Host</td><td>192.168.1.50/24</td><td>AA-AA</td></tr>
-          <tr><td>Home-Router G0/0</td><td>Default Gateway (LAN side)</td><td>192.168.1.1/24</td><td>BB-BB</td></tr>
-          <tr><td>Home-Router G0/1</td><td>WAN/ISP Uplink</td><td>203.0.113.5/30</td><td>CC-CC</td></tr>
-          <tr><td>ISP-Router G0/1</td><td>ISP WAN Interface</td><td>203.0.113.6/30</td><td>DD-DD</td></tr>
-          <tr><td>ISP-Router G0/0</td><td>Server-Side LAN Interface</td><td>10.50.0.1/24</td><td>EE-EE</td></tr>
-          <tr class="dst"><td>MC-Server</td><td>Destination (Minecraft)</td><td>10.50.0.25/24</td><td>FF-FF</td></tr>
-        </tbody>
-      </table>
-      <h3>Quick Network Check</h3>
-      <div class="code">
-        <span class="label">PC subnet:         </span><span class="val">192.168.1.0/24</span><br>
-        <span class="label">MC Server subnet:  </span><span class="val">10.50.0.0/24</span><br>
-        <span class="arrow">→ </span><span class="hi">DIFFERENT networks</span><span class="label"> — default gateway (Home-Router = 192.168.1.1) must be used</span>
-      </div>
-      <h3>Key Packet Details</h3>
-      <div class="code">
-        <span class="label">App protocol:    </span><span class="val">Minecraft Java Edition (TCP port 25565)</span><br>
-        <span class="label">L3 protocol:     </span><span class="val">IPv4 — Protocol field 0x06 (TCP)</span><br>
-        <span class="label">Src IP (fixed):  </span><span class="val">192.168.1.50 — unchanged end-to-end</span><br>
-        <span class="label">Dst IP (fixed):  </span><span class="val">10.50.0.25 — unchanged end-to-end</span><br>
-        <span class="label">Dst MAC hop 1:   </span><span class="val">BB-BB (Home-Router LAN, not the MC server)</span><br>
-        <span class="label">Dst MAC hop 2:   </span><span class="val">FF-FF (MC-Server NIC, set by ISP-Router)</span>
-      </div>
-      <h3>ARP Behaviour</h3>
-      <ul>
-        <li>PC checks: is <strong>10.50.0.25</strong> on my subnet (192.168.1.0/24)? → <strong>No</strong></li>
-        <li>PC ARPs for the Home-Router's MAC (<strong>BB-BB</strong>) on the LAN segment</li>
-        <li>Home-Router strips L2 frame, reads destination IP, routes to ISP-Router via WAN link</li>
-        <li>ISP-Router ARPs for MC-Server's MAC (<strong>FF-FF</strong>) and delivers the final frame</li>
-      </ul>
-      <div class="tip"><strong>Exam tip:</strong> Port 25565 is the L4 destination port for Minecraft. In the exam, if asked "what port?", this is the answer — but you only need to know it adds port info to the segment, not TCP internals.</div>
-    </div>
-
-    <!-- ── SCENARIO 3 ── -->
-    <div class="sc-panel" id="sc-2" style="display:none">
-      <div style="font-family:var(--mono);font-size:11px;color:var(--warn);letter-spacing:1px;text-transform:uppercase;margin-bottom:.7rem">Scenario 3 — File Share Access (Same LAN, No Router)</div>
-      <p style="font-size:13px;color:var(--muted);margin-bottom:.9rem">A laptop on a campus LAN accesses a shared folder on a file server in the same subnet. No router is involved — traffic stays Layer 2 only.</p>
-      <h3>Device Table</h3>
-      <table class="scenario-table">
-        <thead><tr><th>Device</th><th>Role</th><th>IPv4 Address</th><th>MAC</th></tr></thead>
-        <tbody>
-          <tr class="src"><td>Laptop-User</td><td>Source Host</td><td>10.10.10.20/24</td><td>AA-AA</td></tr>
-          <tr><td>SW1</td><td>Layer 2 Switch (no IP needed)</td><td>—</td><td>(learns dynamically)</td></tr>
-          <tr class="dst"><td>File-Server</td><td>Destination</td><td>10.10.10.80/24</td><td>BB-BB</td></tr>
-        </tbody>
-      </table>
-      <h3>Quick Network Check</h3>
-      <div class="code">
-        <span class="label">Laptop subnet:       </span><span class="val">10.10.10.0/24</span><br>
-        <span class="label">File-Server subnet:  </span><span class="val">10.10.10.0/24</span><br>
-        <span class="ok">→ SAME network</span><span class="label"> — no default gateway needed. ARP directly for the File-Server.</span>
-      </div>
-      <h3>Key Packet Details</h3>
-      <div class="code">
-        <span class="label">App protocol:  </span><span class="val">SMB / Windows File Share (TCP port 445)</span><br>
-        <span class="label">L3 protocol:   </span><span class="val">IPv4 — Protocol field 0x06 (TCP)</span><br>
-        <span class="label">Src IP:        </span><span class="val">10.10.10.20</span><br>
-        <span class="label">Dst IP:        </span><span class="val">10.10.10.80</span><br>
-        <span class="label">Dst MAC:       </span><span class="val">BB-BB (File-Server directly — no router hop)</span>
-      </div>
-      <h3>ARP Behaviour (Same Subnet)</h3>
-      <ul>
-        <li>Laptop checks: is <strong>10.10.10.80</strong> on my subnet (10.10.10.0/24)? → <strong>Yes</strong></li>
-        <li>Laptop ARPs directly for <strong>10.10.10.80</strong> — broadcast sent on LAN</li>
-        <li>File-Server replies with its MAC <strong>BB-BB</strong></li>
-        <li>Laptop places <strong>BB-BB</strong> as Dst MAC — frame goes straight to File-Server via SW1</li>
-        <li>SW1 is Layer 2 only — it <strong>learns MAC addresses</strong> and forwards frames; it does NOT inspect IP headers</li>
-      </ul>
-      <div class="tip"><strong>Key difference from Scenario 1:</strong> When source and destination are on the same subnet, the PC ARPs for the <em>destination device's MAC directly</em> — not the default gateway. No router is needed.</div>
-    </div>
-
-    <!-- ── SCENARIO 4 ── -->
-    <div class="sc-panel" id="sc-3" style="display:none">
-      <div style="font-family:var(--mono);font-size:11px;color:var(--warn);letter-spacing:1px;text-transform:uppercase;margin-bottom:.7rem">Scenario 4 — DNS Lookup Before Web Browsing</div>
-      <p style="font-size:13px;color:var(--muted);margin-bottom:.9rem">Before a PC can load a website using a domain name, it must first resolve the name to an IP via a DNS server on a separate network segment — a two-phase packet journey.</p>
-      <h3>Device Table</h3>
-      <table class="scenario-table">
-        <thead><tr><th>Device</th><th>Role</th><th>IPv4 Address</th><th>MAC</th></tr></thead>
-        <tbody>
-          <tr class="src"><td>PC-Student</td><td>Source Host</td><td>172.16.5.10/24</td><td>AA-AA</td></tr>
-          <tr><td>R1 G0/0</td><td>Default Gateway (LAN)</td><td>172.16.5.1/24</td><td>BB-BB</td></tr>
-          <tr><td>R1 G0/1</td><td>WAN/Core Link</td><td>10.0.0.1/30</td><td>CC-CC</td></tr>
-          <tr><td>R2 G0/1</td><td>WAN/Core Link</td><td>10.0.0.2/30</td><td>DD-DD</td></tr>
-          <tr><td>R2 G0/0</td><td>DNS LAN Interface</td><td>172.16.100.1/24</td><td>EE-EE</td></tr>
-          <tr class="dst"><td>DNS-Server</td><td>Destination (Phase 1 of 2)</td><td>172.16.100.53/24</td><td>FF-FF</td></tr>
-        </tbody>
-      </table>
-      <h3>Quick Network Check</h3>
-      <div class="code">
-        <span class="label">PC subnet:         </span><span class="val">172.16.5.0/24</span><br>
-        <span class="label">DNS Server subnet: </span><span class="val">172.16.100.0/24</span><br>
-        <span class="arrow">→ </span><span class="hi">DIFFERENT networks</span><span class="label"> — default gateway (R1 = 172.16.5.1) must be used</span>
-      </div>
-      <h3>Key Packet Details</h3>
-      <div class="code">
-        <span class="label">App protocol:  </span><span class="val">DNS query (UDP port 53)</span><br>
-        <span class="label">L3 protocol:   </span><span class="val">IPv4 — Protocol field 0x11 (UDP)</span><br>
-        <span class="label">Dst IP:        </span><span class="val">172.16.100.53 (DNS Server)</span><br>
-        <span class="label">Dst MAC hop 1: </span><span class="val">BB-BB (R1 — default gateway)</span><br>
-        <span class="label">Dst MAC hop 2: </span><span class="val">FF-FF (DNS-Server NIC, set by R2)</span>
-      </div>
-      <h3>Two-Phase Journey</h3>
-      <ul>
-        <li><strong>Phase A:</strong> PC sends DNS query (UDP/53) to DNS-Server — full L1–L4 encapsulation, two router hops</li>
-        <li><strong>Phase B:</strong> DNS-Server replies with the resolved IP (e.g. 203.0.113.10) back to the PC</li>
-        <li>Only after Phase B does the PC build the <strong>actual HTTP request</strong> to the web server</li>
-        <li>Protocol field in IP header = <strong>0x11 (UDP)</strong> — DNS uses UDP, not TCP (important difference!)</li>
-      </ul>
-      <div class="tip"><strong>Exam tip:</strong> DNS uses <strong>UDP</strong>, not TCP — the Protocol field in the IPv4 header will be <strong>0x11</strong>, not 0x06. If the examiner asks about Protocol field for a DNS packet, say 0x11 (UDP/17).</div>
-    </div>
-
-    <!-- ── SCENARIO 5 ── -->
-    <div class="sc-panel" id="sc-4" style="display:none">
-      <div style="font-family:var(--mono);font-size:11px;color:var(--warn);letter-spacing:1px;text-transform:uppercase;margin-bottom:.7rem">Scenario 5 — VoIP Phone Call Between Office Branches</div>
-      <p style="font-size:13px;color:var(--muted);margin-bottom:.9rem">An IP phone at HQ places a call to an IP phone at a remote branch office. Voice data is carried via RTP over UDP across a routed WAN link.</p>
-      <h3>Device Table</h3>
-      <table class="scenario-table">
-        <thead><tr><th>Device</th><th>Role</th><th>IPv4 Address</th><th>MAC</th></tr></thead>
-        <tbody>
-          <tr class="src"><td>IP-Phone-HQ</td><td>Source Host (VoIP)</td><td>192.168.20.15/24</td><td>AA-AA</td></tr>
-          <tr><td>SW-HQ</td><td>Layer 2 Switch (Voice VLAN)</td><td>—</td><td>(learns dynamically)</td></tr>
-          <tr><td>R-HQ G0/0</td><td>Default Gateway (HQ LAN)</td><td>192.168.20.1/24</td><td>BB-BB</td></tr>
-          <tr><td>R-HQ G0/1</td><td>WAN Link HQ side</td><td>10.2.2.1/30</td><td>CC-CC</td></tr>
-          <tr><td>R-Branch G0/1</td><td>WAN Link Branch side</td><td>10.2.2.2/30</td><td>DD-DD</td></tr>
-          <tr><td>R-Branch G0/0</td><td>Branch LAN Interface</td><td>192.168.30.1/24</td><td>EE-EE</td></tr>
-          <tr class="dst"><td>IP-Phone-Branch</td><td>Destination (VoIP)</td><td>192.168.30.22/24</td><td>FF-FF</td></tr>
-        </tbody>
-      </table>
-      <h3>Quick Network Check</h3>
-      <div class="code">
-        <span class="label">HQ Phone subnet:     </span><span class="val">192.168.20.0/24</span><br>
-        <span class="label">Branch Phone subnet: </span><span class="val">192.168.30.0/24</span><br>
-        <span class="arrow">→ </span><span class="hi">DIFFERENT networks</span><span class="label"> — default gateway (R-HQ = 192.168.20.1) must be used</span>
-      </div>
-      <h3>Key Packet Details</h3>
-      <div class="code">
-        <span class="label">App protocol:   </span><span class="val">RTP (Real-time Transport Protocol) over UDP</span><br>
-        <span class="label">L3 protocol:    </span><span class="val">IPv4 — Protocol field 0x11 (UDP)</span><br>
-        <span class="label">Src IP:         </span><span class="val">192.168.20.15 (IP-Phone-HQ) — fixed end-to-end</span><br>
-        <span class="label">Dst IP:         </span><span class="val">192.168.30.22 (IP-Phone-Branch) — fixed end-to-end</span><br>
-        <span class="label">Dst MAC hop 1:  </span><span class="val">BB-BB (R-HQ G0/0 — default gateway)</span><br>
-        <span class="label">Dst MAC hop 2:  </span><span class="val">FF-FF (IP-Phone-Branch NIC, set by R-Branch)</span>
-      </div>
-      <h3>VoIP-Specific Notes</h3>
-      <ul>
-        <li>VoIP uses <strong>UDP</strong> (not TCP) — voice is delay-sensitive; dropped packets are preferable to retransmission delays</li>
-        <li>The IP header <strong>Protocol field = 0x11</strong> (UDP), same as DNS — both use UDP</li>
-        <li>Each voice RTP packet follows the same L1–L4 encapsulation process as any other packet</li>
-        <li>MAC addresses still change at <strong>each router hop</strong>; IP addresses stay constant throughout</li>
-        <li>A call setup protocol (e.g. SIP on TCP port 5060) runs separately before RTP voice packets flow</li>
-      </ul>
-      <div class="tip"><strong>Exam tip:</strong> VoIP is a great example where <strong>UDP</strong> is used instead of TCP at Layer 4. The Protocol field in the IPv4 header will be <strong>0x11</strong>. Voice packets are small and frequent — exactly the same packet journey as HTTP, just with a different L4 protocol and port.</div>
-    </div>
-
-  </div><!-- /phase-body -->
-</div><!-- /scenario -->
-
-<!-- PHASE 1 -->
-<div id="phase1" class="phase ph1">
-  <div class="phase-header">
-    <span class="phase-badge">Phase 1</span>
-    <h2>Source Packaging — Encapsulation Down the OSI Stack</h2>
-    <span class="sub">2 min</span>
-  </div>
-  <div class="phase-body">
-    <h3>Core idea</h3>
-    <p style="font-size:14px;margin-bottom:.8rem">The application data is wrapped layer-by-layer as it moves <em>down</em> the stack. Each layer adds its own header (and Layer 2 adds a trailer). This process is called <strong>encapsulation</strong>.</p>
-
-    <h3>Layer-by-layer breakdown</h3>
-    <table class="kv">
-      <tr><td>Layer 7 — Application</td><td>HTTP request generated → PDU called <strong>Data / Message</strong></td></tr>
-      <tr><td>Layer 4 — Transport</td><td>Adds port numbers header → PDU = <strong>Segment</strong>. (For this exam: just know it passes PDUs down for encapsulation. No TCP/UDP mechanism detail required.)</td></tr>
-      <tr><td>Layer 3 — Network</td><td>Adds IPv4 header (Src IP, Dst IP, TTL, Protocol) → PDU = <strong>Packet</strong></td></tr>
-      <tr><td>Layer 2 — Data Link</td><td>Adds Ethernet header (Src MAC, Dst MAC, EtherType) + Trailer (FCS/CRC) → PDU = <strong>Frame</strong></td></tr>
-      <tr><td>Layer 1 — Physical</td><td>Converts frame to <strong>bits</strong> (electrical/light/radio signals) onto the medium</td></tr>
+    <h3>Device Table</h3>
+    <table class="dtable">
+      <thead><tr><th>Device</th><th>Role</th><th>IPv4 Address</th><th>MAC</th></tr></thead>
+      <tbody>
+        <tr style="color:#58a6ff"><td>Sales-Tablet</td><td>Source Host</td><td>192.168.1.10/24</td><td>AA-AA</td></tr>
+        <tr><td>R1 G0/0</td><td>LAN Interface (Default GW)</td><td>192.168.1.1/24</td><td>BB-BB</td></tr>
+        <tr><td>R1 S0/0</td><td>WAN Interface</td><td>10.0.0.1/30</td><td>CC-CC</td></tr>
+        <tr><td>R2 S0/0</td><td>WAN Interface</td><td>10.0.0.2/30</td><td>DD-DD</td></tr>
+        <tr><td>R2 G0/0</td><td>LAN Interface</td><td>172.16.1.1/24</td><td>EE-EE</td></tr>
+        <tr style="color:#3fb950"><td>DB-Server</td><td>Destination</td><td>172.16.1.50/24</td><td>FF-FF</td></tr>
+      </tbody>
     </table>
 
-    <h3>IPv4 Packet Header — key fields</h3>
-    <div class="code">
-      <span class="label">Source IP:       </span><span class="val">192.168.10.10  </span><span class="label">← NEVER changes end-to-end</span><br>
-      <span class="label">Destination IP:  </span><span class="val">172.16.1.99    </span><span class="label">← NEVER changes end-to-end</span><br>
-      <span class="label">TTL:             </span><span class="val">128            </span><span class="label">← decremented by 1 at each router hop</span><br>
-      <span class="label">Protocol:        </span><span class="val">0x06 (TCP)     </span><span class="label">← tells Layer 3 what's inside the packet</span>
+    <h3>Network Diagram</h3>
+    <div class="diagram">
+      <svg viewBox="0 0 820 200" width="780" height="200" xmlns="http://www.w3.org/2000/svg" font-family="'Space Mono',monospace">
+        <!-- Background -->
+        <!-- LAN1 zone -->
+        <rect x="10" y="20" width="190" height="160" rx="8" fill="#0c2a4a" stroke="#1e3a5f" stroke-width="1.5"/>
+        <text x="105" y="42" text-anchor="middle" fill="#58a6ff" font-size="11" font-weight="bold">LAN 1 (192.168.1.0/24)</text>
+        <!-- WAN zone -->
+        <rect x="230" y="60" width="360" height="80" rx="8" fill="#1a1500" stroke="#3a3000" stroke-width="1.5"/>
+        <text x="410" y="80" text-anchor="middle" fill="#e3b341" font-size="11" font-weight="bold">WAN (10.0.0.0/30)</text>
+        <!-- LAN2 zone -->
+        <rect x="620" y="20" width="190" height="160" rx="8" fill="#0a2a15" stroke="#1e4d1e" stroke-width="1.5"/>
+        <text x="715" y="42" text-anchor="middle" fill="#3fb950" font-size="11" font-weight="bold">LAN 2 (172.16.1.0/24)</text>
+
+        <!-- Tablet -->
+        <rect x="30" y="70" width="80" height="50" rx="6" fill="#1c2330" stroke="#58a6ff" stroke-width="1.5"/>
+        <text x="70" y="90" text-anchor="middle" fill="#58a6ff" font-size="10">📱</text>
+        <text x="70" y="104" text-anchor="middle" fill="#cce0ff" font-size="10">Tablet</text>
+        <text x="70" y="116" text-anchor="middle" fill="#8b949e" font-size="9">AA-AA</text>
+        <text x="70" y="127" text-anchor="middle" fill="#8b949e" font-size="9">192.168.1.10</text>
+
+        <!-- Arrow Tablet to R1 -->
+        <line x1="110" y1="95" x2="220" y2="95" stroke="#58a6ff" stroke-width="1.5" marker-end="url(#arr1)"/>
+        <text x="165" y="89" text-anchor="middle" fill="#8b949e" font-size="9">Eth Frame</text>
+
+        <!-- R1 -->
+        <rect x="220" y="55" width="90" height="80" rx="6" fill="#1c2330" stroke="#e3b341" stroke-width="1.5"/>
+        <text x="265" y="79" text-anchor="middle" fill="#e3b341" font-size="13">⬡</text>
+        <text x="265" y="94" text-anchor="middle" fill="#fff" font-size="11" font-weight="bold">R1</text>
+        <text x="265" y="107" text-anchor="middle" fill="#8b949e" font-size="9">G0/0: BB-BB</text>
+        <text x="265" y="118" text-anchor="middle" fill="#8b949e" font-size="9">S0/0: CC-CC</text>
+        <text x="265" y="129" text-anchor="middle" fill="#8b949e" font-size="9">192.168.1.1</text>
+
+        <!-- Arrow R1 to R2 -->
+        <line x1="310" y1="95" x2="400" y2="95" stroke="#e3b341" stroke-width="1.5" marker-end="url(#arr2)"/>
+        <text x="355" y="89" text-anchor="middle" fill="#8b949e" font-size="9">WAN Frame</text>
+
+        <!-- R2 -->
+        <rect x="400" y="55" width="90" height="80" rx="6" fill="#1c2330" stroke="#e3b341" stroke-width="1.5"/>
+        <text x="445" y="79" text-anchor="middle" fill="#e3b341" font-size="13">⬡</text>
+        <text x="445" y="94" text-anchor="middle" fill="#fff" font-size="11" font-weight="bold">R2</text>
+        <text x="445" y="107" text-anchor="middle" fill="#8b949e" font-size="9">S0/0: DD-DD</text>
+        <text x="445" y="118" text-anchor="middle" fill="#8b949e" font-size="9">G0/0: EE-EE</text>
+        <text x="445" y="129" text-anchor="middle" fill="#8b949e" font-size="9">172.16.1.1</text>
+
+        <!-- Arrow R2 to DB -->
+        <line x1="490" y1="95" x2="620" y2="95" stroke="#3fb950" stroke-width="1.5" marker-end="url(#arr3)"/>
+        <text x="555" y="89" text-anchor="middle" fill="#8b949e" font-size="9">Eth Frame</text>
+
+        <!-- DB Server -->
+        <rect x="640" y="70" width="80" height="50" rx="6" fill="#1c2330" stroke="#3fb950" stroke-width="1.5"/>
+        <text x="680" y="90" text-anchor="middle" fill="#3fb950" font-size="10">🗄️</text>
+        <text x="680" y="104" text-anchor="middle" fill="#b5d9b5" font-size="10">DB Server</text>
+        <text x="680" y="116" text-anchor="middle" fill="#8b949e" font-size="9">FF-FF</text>
+        <text x="680" y="127" text-anchor="middle" fill="#8b949e" font-size="9">172.16.1.50</text>
+
+        <!-- MAC label row -->
+        <text x="165" y="155" text-anchor="middle" fill="#58a6ff" font-size="9">Src:AA-AA Dst:BB-BB</text>
+        <text x="355" y="155" text-anchor="middle" fill="#e3b341" font-size="9">Src:CC-CC Dst:DD-DD</text>
+        <text x="555" y="155" text-anchor="middle" fill="#3fb950" font-size="9">Src:EE-EE Dst:FF-FF</text>
+
+        <!-- Arrow markers -->
+        <defs>
+          <marker id="arr1" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#58a6ff"/>
+          </marker>
+          <marker id="arr2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#e3b341"/>
+          </marker>
+          <marker id="arr3" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#3fb950"/>
+          </marker>
+        </defs>
+      </svg>
     </div>
 
-    <h3>Ethernet Frame — Layer 2 fields (first hop: PC → R1)</h3>
-    <div class="code">
-      <span class="label">Src MAC:      </span><span class="val">AA-AA  </span><span class="label">(PC NIC)</span><br>
-      <span class="label">Dst MAC:      </span><span class="val">BB-BB  </span><span class="label">(R1 G0/0/0 — the default gateway, NOT the web server!)</span><br>
-      <span class="label">EtherType:    </span><span class="val">0x0800 </span><span class="label">(IPv4)</span><br>
-      <span class="label">FCS/Trailer:  </span><span class="val">error detection bits added</span>
+    <h3>Phase Summary</h3>
+    <div class="phases">
+      <div class="phase-card">
+        <div class="ph-label" style="color:#58a6ff">Phase 1 — Source Packaging</div>
+        <p>Sales app data encapsulated down the stack. App data → Segment (+ port) → Packet (Src IP: 192.168.1.10, Dst IP: 172.16.1.50) → Frame (Src MAC: AA-AA, Dst MAC: BB-BB) → bits via radio waves (Wi-Fi).</p>
+      </div>
+      <div class="phase-card">
+        <div class="ph-label" style="color:#3fb950">Phase 2 — Local Discovery</div>
+        <p>Tablet checks: 172.16.1.50 is NOT on 192.168.1.0/24 → use default gateway R1 (192.168.1.1). ARP broadcast (FF-FF-FF-FF-FF-FF) for R1's MAC. R1 replies unicast: BB-BB. ARP cached.</p>
+      </div>
+      <div class="phase-card">
+        <div class="ph-label" style="color:#f78166">Phase 3 — Gateway Transition</div>
+        <p>R1 accepts (Dst MAC = BB-BB), de-encapsulates, reads Dst IP 172.16.1.50, routing table → via R2 (10.0.0.2). Re-encapsulates: Src CC-CC, Dst DD-DD. R2 repeats: finds 172.16.1.50 on G0/0, ARPs for FF-FF, re-encapsulates: Src EE-EE, Dst FF-FF.</p>
+      </div>
+      <div class="phase-card">
+        <div class="ph-label" style="color:#d2a8ff">Phase 4 — Arrival & De-encap</div>
+        <p>DB Server NIC: Dst MAC FF-FF ✓, FCS valid → strips L2. IP: Dst 172.16.1.50 ✓ → strips L3. Transport: hands data to DB application via port. Sales data successfully written to DB.</p>
+      </div>
     </div>
 
-    <h3>Encapsulation flow</h3>
-    <div class="flow">
-      <div class="flow-box">HTTP Data</div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-box">+ L4 Header → Segment</div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-box">+ IP Header → Packet</div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-box">+ Eth Hdr + FCS → Frame</div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-box" style="color:var(--p1)">Bits on wire</div>
+    <div class="script-toggle" onclick="toggleScript('sc1')">
+      <button class="script-btn" id="sc1-btn">▶ Show Script</button>
+      <span class="script-lbl">Full presentation script (all 4 phases)</span>
     </div>
+    <div class="script-body" id="sc1">
+      <div class="slabel">🎤 Script — Scenario 1: Tablet → DB Server</div>
+      <div class="stext">
+        <span class="em">Phase 1:</span><br>
+        <span class="act">[Point to the Tablet]</span> "So the scenario is a salesperson keying in sales data on a tablet, and that data needs to reach the DB Server on a different network.<br><br>
+        The data gets encapsulated — basically, it adds things layer by layer going down the OSI stack. The sales app is at <span class="em">Layer 7</span>. Then Layer 4 adds the port number, turning the data into a <span class="em">segment</span>. Layer 3 adds the source IP 192.168.1.10 and destination IP 172.16.1.50 — turning it into a <span class="em">packet</span>. Layer 2 adds the MAC addresses — source MAC AA-AA, destination MAC BB-BB, which is the router — turning it into a <span class="em">frame</span>. Layer 1 then converts the frame into <span class="em">bits</span>, which in this case are transmitted as <span class="em">radio waves</span> since it's Wi-Fi."<br><br>
 
-    <div class="tip"><strong>Key takeaway:</strong> IP addresses are "end-to-end" — they identify the original source and final destination. MAC addresses are "hop-to-hop" — they change at every router.</div>
+        <span class="em">Phase 2:</span><br>
+        <span class="act">[Point to the tablet and R1]</span> "Before the tablet can send anything, it needs to figure out where to send it. It checks if the destination 172.16.1.50 is on the same network. It's not — so it has to send through the <span class="em">default gateway, R1 at 192.168.1.1</span>.<br><br>
+        To find R1's MAC, the tablet sends an <span class="em">ARP Request</span> — a broadcast to FF-FF-FF-FF-FF-FF, asking who has 192.168.1.1. R1 hears it and sends a <span class="em">unicast ARP Reply</span> back with its MAC BB-BB. The tablet saves this in its <span class="em">ARP cache</span>."<br><br>
 
-    <div class="script-toggle" onclick="toggleScript('s1')">
-      <button class="script-toggle-btn" id="s1-btn">▶ Show Script</button>
-      <span class="script-toggle-label">Presentation script (2 min)</span>
-    </div>
-    <div class="script-collapsible" id="s1">
-      <div class="script-block">
-        <div class="script-label">🎤 What to say — Phase 1: Source Packaging</div>
-        <div class="script-text">
-          <span class="action">[Point to PC-Accounting on the diagram]</span><br><br>
-          "I'm responsible for Phase 1 — Source Packaging. This is where the data begins its journey, starting at the PC-Accounting host.<br><br>
-          The user wants to access the web server, so a <span class="emphasis">HTTP request</span> is generated at the Application layer. As that data moves <span class="emphasis">down the OSI stack</span>, each layer wraps it with its own header — this process is called <span class="emphasis">encapsulation</span>.<br><br>
-          <span class="action">[Trace down with your finger: App → Transport → Network → Data Link → Physical]</span><br><br>
-          At Layer 4, the Transport layer adds a header containing port numbers, turning the data into a <span class="emphasis">segment</span>. At Layer 3, the Network layer adds an <span class="emphasis">IPv4 header</span> — this is where the source IP 192.168.10.10 and destination IP 172.16.1.99 are stamped. These IP addresses will remain unchanged for the entire journey.<br><br>
-          At Layer 2, the Data Link layer wraps the packet into an <span class="emphasis">Ethernet frame</span> — adding a header with source MAC AA-AA and destination MAC <span class="emphasis">BB-BB, which is R1's interface</span>, not the web server. We address it to the router because the destination is on a different network. A FCS trailer is also added for error detection.<br><br>
-          Finally, Layer 1 converts the entire frame into <span class="emphasis">bits</span> — electrical signals — and transmits them onto the wire toward the switch and then R1."
-        </div>
+        <span class="em">Phase 3:</span><br>
+        <span class="act">[Point to R1 then R2]</span> "The frame arrives at R1. R1 checks the destination MAC — it's BB-BB, matches its own interface, so it accepts. R1 <span class="em">de-encapsulates</span> the Ethernet header and reads the destination IP: 172.16.1.50. It checks its <span class="em">routing table</span> — basically an internal map of the network — and finds the route goes through R2. It re-encapsulates the packet with new MACs: source CC-CC, destination DD-DD, and forwards it to R2.<br><br>
+        R2 does the same thing — de-encapsulates, reads the IP, finds 172.16.1.50 is directly connected on its G0/0 interface, ARPs for the DB server's MAC FF-FF, re-encapsulates with source EE-EE, destination FF-FF, and sends it out."<br><br>
+
+        <span class="em">Phase 4:</span><br>
+        <span class="act">[Point to DB Server]</span> "The frame arrives at the DB Server. The NIC checks the destination MAC — FF-FF, matches — so it accepts the frame. It checks the <span class="em">FCS trailer</span> for errors, strips the Ethernet header, and passes the packet up. Layer 3 checks the destination IP — 172.16.1.50 — matches. Strips the IP header, passes the segment up. Layer 4 reads the port and pushes the data to the <span class="em">database application</span>. The sales data is now successfully received and can be written to the database."
       </div>
     </div>
   </div>
 </div>
 
-<!-- PHASE 2 -->
-<div id="phase2" class="phase ph2">
-  <div class="phase-header">
-    <span class="phase-badge">Phase 2</span>
-    <h2>Local Discovery — Is it local or remote? ARP for the gateway.</h2>
-    <span class="sub">2 min</span>
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SCENARIO 2                                              -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="s2" class="card">
+  <div class="card-header">
+    <span class="badge" style="background:#0a2a15;color:#3fb950">Scenario 2</span>
+    <h2>Office Laptop → Switch → Router → File Server</h2>
+    <span class="sub">Single router, switched LAN</span>
   </div>
-  <div class="phase-body">
-    <h3>Step 1 — Determine local vs remote</h3>
-    <div class="code">
-      <span class="label">PC IP:        </span><span class="val">192.168.10.10 /24  </span><span class="arrow">→ Network: </span><span class="val">192.168.10.0</span><br>
-      <span class="label">Destination:  </span><span class="val">172.16.1.99        </span><span class="arrow">→ Network: </span><span class="val">172.16.1.0</span><br>
-      <span class="hi">Different network prefix</span><span class="label"> → PC cannot reach destination directly</span><br>
-      <span class="ok">→ PC sends to Default Gateway: 192.168.10.1</span>
-    </div>
+  <div class="card-body">
+    <p class="lead">An employee on a laptop accesses a file server in the company's server VLAN through a central router.</p>
 
-    <h3>Step 2 — Check ARP table for gateway's MAC</h3>
-    <ul>
-      <li>PC looks up <strong>192.168.10.1</strong> in its ARP cache</li>
-      <li><strong>Hit</strong> → use the cached MAC address → proceed to build frame</li>
-      <li><strong>Miss</strong> → must send an ARP Request first</li>
-    </ul>
-
-    <h3>ARP Request (broadcast)</h3>
-    <div class="code">
-      <span class="label">Dst MAC:  </span><span class="hi">FF-FF-FF-FF-FF-FF</span><span class="label">  (broadcast — all devices on the LAN receive this)</span><br>
-      <span class="label">Src MAC:  </span><span class="val">AA-AA</span><br>
-      <span class="label">Payload:  </span><span class="val">"Who has 192.168.10.1? Tell 192.168.10.10"</span>
-    </div>
-
-    <h3>ARP Reply (unicast — from R1 back to PC)</h3>
-    <div class="code">
-      <span class="label">Dst MAC: </span><span class="val">AA-AA</span><span class="label">  Src MAC: </span><span class="val">BB-BB</span><br>
-      <span class="label">Payload: </span><span class="val">"192.168.10.1 is at BB-BB"</span><br>
-      <span class="ok">PC stores mapping in ARP table → now builds the frame</span>
-    </div>
-
-    <h3>ARP table rules</h3>
-    <ul>
-      <li>Maps <strong>IP address ↔ MAC address</strong></li>
-      <li>Destination on <strong>same subnet</strong>: ARP for the <strong>destination's IP</strong></li>
-      <li>Destination on <strong>remote network</strong>: ARP for the <strong>default gateway's IP</strong></li>
-      <li>ARP broadcasts are NOT forwarded by routers — they stay on the local subnet</li>
-    </ul>
-
-    <h3>Resulting frame (leaving the PC)</h3>
-    <div class="code">
-      <span class="label">Src MAC: </span><span class="val">AA-AA</span><span class="label">  |  Dst MAC: </span><span class="val">BB-BB</span><span class="label">  (router's MAC)</span><br>
-      <span class="label">Src IP:  </span><span class="val">192.168.10.10</span><span class="label">  |  Dst IP: </span><span class="val">172.16.1.99</span>
-    </div>
-
-    <div class="tip"><strong>Key point:</strong> The PC uses the router's MAC as the destination MAC — not the web server's MAC. The packet is handed off to the router to continue the journey.</div>
-
-    <div class="script-toggle" onclick="toggleScript('s2')">
-      <button class="script-toggle-btn" id="s2-btn">▶ Show Script</button>
-      <span class="script-toggle-label">Presentation script (2 min)</span>
-    </div>
-    <div class="script-collapsible" id="s2">
-      <div class="script-block">
-        <div class="script-label">🎤 What to say — Phase 2: Local Discovery</div>
-        <div class="script-text">
-          <span class="action">[Point to PC-Accounting on the diagram]</span><br><br>
-          "I'm covering Phase 2 — Local Discovery. Before the PC can send anything, it needs to figure out where to send it and how to address the frame.<br><br>
-          The PC compares its own IP address — 192.168.10.10 with subnet mask /24 — against the destination IP 172.16.1.99. <span class="emphasis">The network prefixes don't match</span>, so the PC knows the destination is on a remote network. It cannot reach it directly — it must go through its <span class="emphasis">default gateway, which is R1 at 192.168.10.1</span>.<br><br>
-          <span class="action">[Point to R1 on the diagram]</span><br><br>
-          Now the PC needs R1's MAC address to build the Ethernet frame. It checks its <span class="emphasis">ARP table</span>. If there's no entry for 192.168.10.1, the PC sends an <span class="emphasis">ARP Request — a broadcast</span> with destination MAC FF-FF-FF-FF-FF-FF. Every device on the LAN receives this, but only R1 — the owner of 192.168.10.1 — replies.<br><br>
-          R1 sends back a <span class="emphasis">unicast ARP Reply</span> with its MAC address BB-BB. The PC stores this in its ARP table and can now build the frame.<br><br>
-          The resulting frame leaves the PC addressed like this: source MAC AA-AA, <span class="emphasis">destination MAC BB-BB</span> — the router — and the IP packet inside still carries the original source and destination IPs unchanged. The frame is then sent onto the local network toward R1."
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- PHASE 3 -->
-<div id="phase3" class="phase ph3">
-  <div class="phase-header">
-    <span class="phase-badge">Phase 3</span>
-    <h2>Gateway Transition — De-encap → Route Lookup → Re-encap</h2>
-    <span class="sub">2 min</span>
-  </div>
-  <div class="phase-body">
-    <h3>Step 1 — R1 receives the frame on G0/0/0</h3>
-    <ul>
-      <li>NIC checks Dst MAC = <strong>BB-BB</strong> ✓ matches R1's interface → accept</li>
-      <li><strong>De-encapsulation</strong>: strips the Ethernet header &amp; FCS trailer</li>
-      <li>Exposes the IPv4 packet — reads Dst IP: <span style="color:var(--p3)">172.16.1.99</span></li>
-    </ul>
-
-    <h3>Step 2 — Routing table lookup</h3>
-    <div class="code">
-      <span class="label">Looking up: </span><span class="val">172.16.1.99</span><br>
-      <span class="ok">Match: 172.16.1.0/24 → next-hop 10.1.1.2 via interface S0/1/0</span><br>
-      <span class="hi">TTL decremented: </span><span class="val">128 → 127</span>
-    </div>
-
-    <h3>Step 3 — Re-encapsulation for WAN link (R1 → R2)</h3>
-    <div class="code">
-      <span class="label">NEW Src MAC: </span><span class="val">CC-CC</span><span class="label">  (R1 S0/1/0)</span><br>
-      <span class="label">NEW Dst MAC: </span><span class="val">DD-DD</span><span class="label">  (R2 S0/1/0)</span><br>
-      <span class="label">IP unchanged: Src </span><span class="val">192.168.10.10</span><span class="label"> → Dst </span><span class="val">172.16.1.99</span>
-    </div>
-
-    <h3>Step 4 — R2 repeats the process</h3>
-    <div class="code">
-      <span class="label">R2 strips old L2, reads Dst IP </span><span class="val">172.16.1.99</span><br>
-      <span class="ok">Match: 172.16.1.0/24 directly connected on G0/0/0</span><br>
-      <span class="label">R2 ARPs for 172.16.1.99 → reply: MAC </span><span class="val">22-22</span><br>
-      <span class="label">NEW Src MAC: </span><span class="val">11-11</span><span class="label">  (R2 G0/0/0)</span><br>
-      <span class="label">NEW Dst MAC: </span><span class="val">22-22</span><span class="label">  (Web-Server NIC)</span>
-    </div>
-
-    <h3>What changes vs what stays the same</h3>
-    <table class="kv">
-      <tr><td>L2 Src/Dst MAC</td><td><strong>Changes at every router hop</strong> — local link addressing only</td></tr>
-      <tr><td>L3 Src/Dst IP</td><td><strong>Stays the same</strong> the entire end-to-end journey</td></tr>
-      <tr><td>TTL</td><td><strong>Decremented by 1</strong> at every router; at 0 → packet discarded + ICMP Time Exceeded sent</td></tr>
+    <h3>Device Table</h3>
+    <table class="dtable">
+      <thead><tr><th>Device</th><th>Role</th><th>IPv4 Address</th><th>MAC</th></tr></thead>
+      <tbody>
+        <tr style="color:#58a6ff"><td>Laptop</td><td>Source Host</td><td>10.10.1.20/24</td><td>AA-AA</td></tr>
+        <tr><td>Switch SW1</td><td>Layer 2 Switch</td><td>N/A</td><td>—</td></tr>
+        <tr><td>R1 G0/0</td><td>LAN Interface (Default GW)</td><td>10.10.1.1/24</td><td>BB-BB</td></tr>
+        <tr><td>R1 G0/1</td><td>Server LAN Interface</td><td>10.10.2.1/24</td><td>CC-CC</td></tr>
+        <tr style="color:#3fb950"><td>File-Server</td><td>Destination</td><td>10.10.2.100/24</td><td>DD-DD</td></tr>
+      </tbody>
     </table>
 
-    <div class="tip"><strong>Router's 4 L2 functions at each hop:</strong> (1) Accept frame from incoming interface → (2) De-encapsulate L2 header → (3) Consult routing table + re-encapsulate with new L2 addresses → (4) Forward new frame out correct interface.</div>
+    <h3>Network Diagram</h3>
+    <div class="diagram">
+      <svg viewBox="0 0 820 200" width="780" height="200" xmlns="http://www.w3.org/2000/svg" font-family="'Space Mono',monospace">
+        <defs>
+          <marker id="g2a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#58a6ff"/></marker>
+          <marker id="g2b" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#3fb950"/></marker>
+          <marker id="g2c" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#e3b341"/></marker>
+        </defs>
+        <!-- LAN1 zone -->
+        <rect x="10" y="20" width="300" height="160" rx="8" fill="#0c2a4a" stroke="#1e3a5f" stroke-width="1.5"/>
+        <text x="160" y="42" text-anchor="middle" fill="#58a6ff" font-size="11" font-weight="bold">Office LAN (10.10.1.0/24)</text>
+        <!-- Server LAN zone -->
+        <rect x="530" y="20" width="280" height="160" rx="8" fill="#0a2a15" stroke="#1e4d1e" stroke-width="1.5"/>
+        <text x="670" y="42" text-anchor="middle" fill="#3fb950" font-size="11" font-weight="bold">Server LAN (10.10.2.0/24)</text>
 
-    <div class="script-toggle" onclick="toggleScript('s3')">
-      <button class="script-toggle-btn" id="s3-btn">▶ Show Script</button>
-      <span class="script-toggle-label">Presentation script (2 min)</span>
+        <!-- Laptop -->
+        <rect x="25" y="70" width="80" height="50" rx="6" fill="#1c2330" stroke="#58a6ff" stroke-width="1.5"/>
+        <text x="65" y="90" text-anchor="middle" fill="#58a6ff" font-size="11">💻</text>
+        <text x="65" y="104" text-anchor="middle" fill="#cce0ff" font-size="10">Laptop</text>
+        <text x="65" y="116" text-anchor="middle" fill="#8b949e" font-size="9">AA-AA</text>
+        <text x="65" y="127" text-anchor="middle" fill="#8b949e" font-size="9">10.10.1.20</text>
+
+        <!-- Arrow to switch -->
+        <line x1="105" y1="95" x2="175" y2="95" stroke="#58a6ff" stroke-width="1.5" marker-end="url(#g2a)"/>
+
+        <!-- Switch -->
+        <rect x="175" y="70" width="80" height="50" rx="6" fill="#1c2330" stroke="#8b949e" stroke-width="1.5"/>
+        <text x="215" y="90" text-anchor="middle" fill="#8b949e" font-size="11">⊞</text>
+        <text x="215" y="104" text-anchor="middle" fill="#e6edf3" font-size="10">SW1</text>
+        <text x="215" y="116" text-anchor="middle" fill="#8b949e" font-size="9">Layer 2</text>
+
+        <!-- Arrow switch to R1 -->
+        <line x1="255" y1="95" x2="345" y2="95" stroke="#58a6ff" stroke-width="1.5" marker-end="url(#g2a)"/>
+        <text x="300" y="89" text-anchor="middle" fill="#8b949e" font-size="9">Dst:BB-BB</text>
+
+        <!-- R1 -->
+        <rect x="345" y="55" width="90" height="90" rx="6" fill="#1c2330" stroke="#e3b341" stroke-width="1.5"/>
+        <text x="390" y="79" text-anchor="middle" fill="#e3b341" font-size="13">⬡</text>
+        <text x="390" y="94" text-anchor="middle" fill="#fff" font-size="11" font-weight="bold">R1</text>
+        <text x="390" y="107" text-anchor="middle" fill="#8b949e" font-size="9">G0/0: BB-BB</text>
+        <text x="390" y="118" text-anchor="middle" fill="#8b949e" font-size="9">10.10.1.1</text>
+        <text x="390" y="130" text-anchor="middle" fill="#8b949e" font-size="9">G0/1: CC-CC</text>
+        <text x="390" y="141" text-anchor="middle" fill="#8b949e" font-size="9">10.10.2.1</text>
+
+        <!-- Arrow R1 to FileServer -->
+        <line x1="435" y1="95" x2="545" y2="95" stroke="#3fb950" stroke-width="1.5" marker-end="url(#g2b)"/>
+        <text x="490" y="89" text-anchor="middle" fill="#8b949e" font-size="9">Src:CC-CC Dst:DD-DD</text>
+
+        <!-- File Server -->
+        <rect x="545" y="70" width="90" height="50" rx="6" fill="#1c2330" stroke="#3fb950" stroke-width="1.5"/>
+        <text x="590" y="90" text-anchor="middle" fill="#3fb950" font-size="11">🗂️</text>
+        <text x="590" y="104" text-anchor="middle" fill="#b5d9b5" font-size="10">File Server</text>
+        <text x="590" y="116" text-anchor="middle" fill="#8b949e" font-size="9">DD-DD</text>
+        <text x="590" y="127" text-anchor="middle" fill="#8b949e" font-size="9">10.10.2.100</text>
+
+        <!-- Switch note -->
+        <text x="160" y="160" text-anchor="middle" fill="#8b949e" font-size="9">Switch forwards by MAC table (L2 only)</text>
+        <text x="490" y="155" text-anchor="middle" fill="#3fb950" font-size="9">New frame: Src CC-CC → Dst DD-DD</text>
+      </svg>
     </div>
-    <div class="script-collapsible" id="s3">
-      <div class="script-block">
-        <div class="script-label">🎤 What to say — Phase 3: The Gateway Transition</div>
-        <div class="script-text">
-          <span class="action">[Point to R1 on the diagram]</span><br><br>
-          "I'm covering Phase 3 — the Gateway Transition. This is where the router takes the frame from the local LAN and forwards it toward the destination network.<br><br>
-          The frame arrives at R1's G0/0/0 interface. R1's NIC checks the destination MAC — it's BB-BB, which matches this interface, so R1 <span class="emphasis">accepts the frame</span>. It then <span class="emphasis">de-encapsulates</span> the Ethernet header and trailer, exposing the IPv4 packet inside.<br><br>
-          <span class="action">[Point to the packet's destination IP]</span><br><br>
-          R1 reads the <span class="emphasis">destination IP: 172.16.1.99</span> and looks it up in its <span class="emphasis">routing table</span>. It finds a match — the 172.16.1.0/24 network is reachable via R2 at 10.1.1.2, out of interface S0/1/0. R1 also <span class="emphasis">decrements the TTL</span> by 1.<br><br>
-          R1 now <span class="emphasis">re-encapsulates</span> the same IP packet into a brand new Ethernet frame for the WAN link — with a new source MAC CC-CC and destination MAC DD-DD. Notice the IP addresses inside have not changed at all.<br><br>
-          <span class="action">[Point to R2 on the diagram]</span><br><br>
-          When the frame reaches R2, the exact same process repeats — R2 de-encapsulates, looks up 172.16.1.99, finds it directly connected on G0/0/0, ARPs for the web server's MAC 22-22, and re-encapsulates the packet one final time before forwarding it to the server."
-        </div>
+
+    <h3>Phase Summary</h3>
+    <div class="phases">
+      <div class="phase-card">
+        <div class="ph-label" style="color:#58a6ff">Phase 1 — Encapsulation</div>
+        <p>File request (SMB/FTP) at App layer. Segment (+ port) → Packet (Src: 10.10.1.20, Dst: 10.10.2.100) → Frame (Src: AA-AA, Dst: BB-BB) → bits on Ethernet cable.</p>
+      </div>
+      <div class="phase-card">
+        <div class="ph-label" style="color:#3fb950">Phase 2 — Local Discovery</div>
+        <p>10.10.2.100 is NOT on 10.10.1.0/24 → default gateway R1 (10.10.1.1). ARP broadcast for BB-BB. Switch forwards broadcast to all ports. R1 replies unicast.</p>
+      </div>
+      <div class="phase-card">
+        <div class="ph-label" style="color:#f78166">Phase 3 — Switch + Router</div>
+        <p>Switch forwards frame to R1 using its MAC address table (Layer 2 only — no IP changes). R1 de-encapsulates, looks up 10.10.2.100, finds directly connected on G0/1, ARPs for DD-DD, re-encapsulates: Src CC-CC → Dst DD-DD.</p>
+      </div>
+      <div class="phase-card">
+        <div class="ph-label" style="color:#d2a8ff">Phase 4 — De-encapsulation</div>
+        <p>File Server NIC checks Dst MAC DD-DD ✓. FCS valid. Strips L2 → L3 checks 10.10.2.100 ✓ → strips L3 → L4 delivers to file sharing application.</p>
+      </div>
+    </div>
+
+    <div class="script-toggle" onclick="toggleScript('sc2')">
+      <button class="script-btn" id="sc2-btn">▶ Show Script</button>
+      <span class="script-lbl">Full presentation script (all 4 phases)</span>
+    </div>
+    <div class="script-body" id="sc2">
+      <div class="slabel">🎤 Script — Scenario 2: Laptop → Switch → Router → File Server</div>
+      <div class="stext">
+        <span class="em">Phase 1:</span><br>
+        <span class="act">[Point to the Laptop]</span> "The scenario is an office employee on a laptop trying to access a file server on a different subnet. The file request is generated at the <span class="em">Application layer</span>. It goes down the stack — Layer 4 adds the port number to make a segment, Layer 3 adds source IP 10.10.1.20 and destination IP 10.10.2.100 to make a packet, and Layer 2 adds source MAC AA-AA and destination MAC BB-BB — that's R1, the default gateway — to make a frame. Layer 1 puts it on the wire as bits."<br><br>
+
+        <span class="em">Phase 2:</span><br>
+        <span class="act">[Point to Laptop → Switch → R1]</span> "The laptop compares 10.10.2.100 against its own subnet 10.10.1.0/24 — they're different, so it sends to the <span class="em">default gateway R1</span>. It broadcasts an ARP Request to find R1's MAC. The <span class="em">switch forwards this broadcast to all its ports</span> — note the switch is a Layer 2 device, it just reads MAC addresses and forwards, it doesn't touch the IP. R1 replies unicast with MAC BB-BB."<br><br>
+
+        <span class="em">Phase 3:</span><br>
+        <span class="act">[Point to R1]</span> "The frame reaches R1 via the switch. R1 de-encapsulates, reads destination IP 10.10.2.100, looks in the routing table — it's directly connected on G0/1. R1 ARPs for the File Server's MAC DD-DD. It re-encapsulates the packet with new source MAC CC-CC and destination MAC DD-DD, and forwards it out G0/1."<br><br>
+
+        <span class="em">Phase 4:</span><br>
+        <span class="act">[Point to File Server]</span> "The File Server NIC receives the frame, checks destination MAC DD-DD — matches. Validates FCS, strips L2. Layer 3 checks destination IP 10.10.2.100 — matches, strips L3. Layer 4 reads the port and passes the data to the <span class="em">file sharing service</span>. The employee can now access their files."
       </div>
     </div>
   </div>
 </div>
 
-<!-- PHASE 4 -->
-<div id="phase4" class="phase ph4">
-  <div class="phase-header">
-    <span class="phase-badge">Phase 4</span>
-    <h2>Arrival &amp; De-encapsulation — Up the Stack to the App</h2>
-    <span class="sub">2 min</span>
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SCENARIO 3                                              -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="s3" class="card">
+  <div class="card-header">
+    <span class="badge" style="background:#2a1510;color:#f78166">Scenario 3</span>
+    <h2>PC → Router 1 → Router 2 → Router 3 → Web Server</h2>
+    <span class="sub">Three-hop WAN path</span>
   </div>
-  <div class="phase-body">
-    <h3>Step 1 — Physical Layer (Layer 1)</h3>
-    <ul>
-      <li>Web-server NIC receives bits from the wire/wireless medium</li>
-      <li>Converts signals back into the binary frame → passes up to Layer 2</li>
-    </ul>
+  <div class="card-body">
+    <p class="lead">A workstation browses a company intranet web server that sits three router hops away — demonstrating TTL decrement and multiple re-encapsulations.</p>
 
-    <h3>Step 2 — Data Link Layer (Layer 2) — NIC check</h3>
-    <ul>
-      <li>NIC reads Dst MAC in the frame header = <strong>22-22</strong></li>
-      <li>Compares against its own MAC stored in RAM → <strong>Match ✓ → accept</strong></li>
-      <li>If no match → frame is <strong>silently discarded</strong></li>
-      <li>Checks <strong>FCS/CRC trailer</strong> for transmission errors → if corrupted, discard</li>
-      <li>Strips Ethernet header + trailer → passes <strong>IPv4 packet</strong> up</li>
-    </ul>
+    <h3>Device Table</h3>
+    <table class="dtable">
+      <thead><tr><th>Device</th><th>Role</th><th>IPv4 Address</th><th>MAC</th></tr></thead>
+      <tbody>
+        <tr style="color:#58a6ff"><td>PC-Work</td><td>Source Host</td><td>192.168.10.5/24</td><td>AA-AA</td></tr>
+        <tr><td>R1 G0/0</td><td>LAN (Default GW)</td><td>192.168.10.1/24</td><td>BB-BB</td></tr>
+        <tr><td>R1 S0/0 → R2 S0/0</td><td>WAN Link 1</td><td>10.1.1.1 / 10.1.1.2 /30</td><td>CC-CC / DD-DD</td></tr>
+        <tr><td>R2 S0/1 → R3 S0/0</td><td>WAN Link 2</td><td>10.2.2.1 / 10.2.2.2 /30</td><td>EE-EE / FF-FF</td></tr>
+        <tr><td>R3 G0/0</td><td>Server LAN</td><td>172.20.1.1/24</td><td>11-11</td></tr>
+        <tr style="color:#3fb950"><td>Web-Server</td><td>Destination</td><td>172.20.1.10/24</td><td>22-22</td></tr>
+      </tbody>
+    </table>
 
-    <h3>Step 3 — Network Layer (Layer 3)</h3>
-    <ul>
-      <li>Reads Dst IP = <strong>172.16.1.99</strong> → matches this host ✓</li>
-      <li>Reads <strong>Protocol field</strong> (e.g. 0x06 = TCP) → knows what's inside</li>
-      <li>Strips IP header → passes <strong>segment</strong> up to Transport layer</li>
-    </ul>
+    <h3>Network Diagram</h3>
+    <div class="diagram">
+      <svg viewBox="0 0 820 210" width="780" height="210" xmlns="http://www.w3.org/2000/svg" font-family="'Space Mono',monospace">
+        <defs>
+          <marker id="g3a" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#58a6ff"/></marker>
+          <marker id="g3b" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#e3b341"/></marker>
+          <marker id="g3c" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#f78166"/></marker>
+          <marker id="g3d" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#3fb950"/></marker>
+        </defs>
+        <!-- PC -->
+        <rect x="10" y="65" width="70" height="70" rx="6" fill="#1c2330" stroke="#58a6ff" stroke-width="1.5"/>
+        <text x="45" y="85" text-anchor="middle" fill="#58a6ff" font-size="11">🖥</text>
+        <text x="45" y="99" text-anchor="middle" fill="#cce0ff" font-size="10">PC-Work</text>
+        <text x="45" y="111" text-anchor="middle" fill="#8b949e" font-size="9">AA-AA</text>
+        <text x="45" y="122" text-anchor="middle" fill="#8b949e" font-size="9">192.168.10.5</text>
+        <text x="45" y="132" text-anchor="middle" fill="#e3b341" font-size="9">TTL=128</text>
 
-    <h3>Step 4 — Transport Layer (Layer 4)</h3>
-    <ul>
-      <li>Reads <strong>destination port</strong> (e.g. port 80 = HTTP)</li>
-      <li>Strips transport header → passes <strong>application data</strong> up</li>
-      <li><em>For this assessment: no TCP/UDP mechanism details required — just know it de-encapsulates and delivers data up.</em></li>
-    </ul>
+        <!-- PC → R1 -->
+        <line x1="80" y1="100" x2="130" y2="100" stroke="#58a6ff" stroke-width="1.5" marker-end="url(#g3a)"/>
+        <text x="105" y="94" text-anchor="middle" fill="#8b949e" font-size="8">Dst:BB-BB</text>
 
-    <h3>Step 5 — Application Layer (Layer 7)</h3>
-    <ul>
-      <li>Web server process receives the <strong>HTTP GET request</strong></li>
-      <li>Processes the request, generates <strong>HTTP response</strong></li>
-      <li>Response re-encapsulated and sent back down the stack toward PC</li>
-    </ul>
+        <!-- R1 -->
+        <rect x="130" y="60" width="75" height="80" rx="6" fill="#1c2330" stroke="#e3b341" stroke-width="1.5"/>
+        <text x="167" y="80" text-anchor="middle" fill="#e3b341" font-size="12">⬡</text>
+        <text x="167" y="94" text-anchor="middle" fill="#fff" font-size="11" font-weight="bold">R1</text>
+        <text x="167" y="107" text-anchor="middle" fill="#8b949e" font-size="8">BB-BB/CC-CC</text>
+        <text x="167" y="118" text-anchor="middle" fill="#e3b341" font-size="9">TTL−1=127</text>
+        <text x="167" y="130" text-anchor="middle" fill="#8b949e" font-size="8">192.168.10.1</text>
 
-    <h3>De-encapsulation flow</h3>
-    <div class="flow">
-      <div class="flow-box" style="color:var(--p4)">Bits (L1)</div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-box">Frame (L2)</div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-box">Packet (L3)</div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-box">Segment (L4)</div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-box">Data (App)</div>
+        <!-- R1 → R2 -->
+        <line x1="205" y1="100" x2="285" y2="100" stroke="#e3b341" stroke-width="1.5" marker-end="url(#g3b)"/>
+        <text x="245" y="94" text-anchor="middle" fill="#8b949e" font-size="8">Src:CC Dst:DD</text>
+
+        <!-- R2 -->
+        <rect x="285" y="60" width="75" height="80" rx="6" fill="#1c2330" stroke="#e3b341" stroke-width="1.5"/>
+        <text x="322" y="80" text-anchor="middle" fill="#e3b341" font-size="12">⬡</text>
+        <text x="322" y="94" text-anchor="middle" fill="#fff" font-size="11" font-weight="bold">R2</text>
+        <text x="322" y="107" text-anchor="middle" fill="#8b949e" font-size="8">DD-DD/EE-EE</text>
+        <text x="322" y="118" text-anchor="middle" fill="#e3b341" font-size="9">TTL−1=126</text>
+        <text x="322" y="130" text-anchor="middle" fill="#8b949e" font-size="8">10.1.1.2</text>
+
+        <!-- R2 → R3 -->
+        <line x1="360" y1="100" x2="440" y2="100" stroke="#f78166" stroke-width="1.5" marker-end="url(#g3c)"/>
+        <text x="400" y="94" text-anchor="middle" fill="#8b949e" font-size="8">Src:EE Dst:FF</text>
+
+        <!-- R3 -->
+        <rect x="440" y="60" width="75" height="80" rx="6" fill="#1c2330" stroke="#f78166" stroke-width="1.5"/>
+        <text x="477" y="80" text-anchor="middle" fill="#f78166" font-size="12">⬡</text>
+        <text x="477" y="94" text-anchor="middle" fill="#fff" font-size="11" font-weight="bold">R3</text>
+        <text x="477" y="107" text-anchor="middle" fill="#8b949e" font-size="8">FF-FF/11-11</text>
+        <text x="477" y="118" text-anchor="middle" fill="#e3b341" font-size="9">TTL−1=125</text>
+        <text x="477" y="130" text-anchor="middle" fill="#8b949e" font-size="8">10.2.2.2</text>
+
+        <!-- R3 → Web -->
+        <line x1="515" y1="100" x2="600" y2="100" stroke="#3fb950" stroke-width="1.5" marker-end="url(#g3d)"/>
+        <text x="557" y="94" text-anchor="middle" fill="#8b949e" font-size="8">Src:11 Dst:22</text>
+
+        <!-- Web Server -->
+        <rect x="600" y="65" width="80" height="70" rx="6" fill="#1c2330" stroke="#3fb950" stroke-width="1.5"/>
+        <text x="640" y="85" text-anchor="middle" fill="#3fb950" font-size="11">🌐</text>
+        <text x="640" y="99" text-anchor="middle" fill="#b5d9b5" font-size="10">Web Server</text>
+        <text x="640" y="111" text-anchor="middle" fill="#8b949e" font-size="9">22-22</text>
+        <text x="640" y="122" text-anchor="middle" fill="#8b949e" font-size="9">172.20.1.10</text>
+        <text x="640" y="132" text-anchor="middle" fill="#e3b341" font-size="9">TTL=125</text>
+
+        <!-- TTL Banner -->
+        <text x="410" y="180" text-anchor="middle" fill="#e3b341" font-size="10" font-weight="bold">TTL: 128 → 127 (R1) → 126 (R2) → 125 (R3) — IP addresses NEVER change</text>
+
+        <!-- IP constant bar -->
+        <text x="410" y="195" text-anchor="middle" fill="#8b949e" font-size="9">Src IP 192.168.10.5 → Dst IP 172.20.1.10 constant throughout all hops</text>
+      </svg>
     </div>
 
-    <div class="tip"><strong>Key phrase for presentation:</strong> "The NIC checks the destination MAC. On match, it accepts the frame, verifies integrity with FCS, and passes the payload up the OSI stack — stripping the header at each layer until the application receives the original data."</div>
-
-    <div class="script-toggle" onclick="toggleScript('s4')">
-      <button class="script-toggle-btn" id="s4-btn">▶ Show Script</button>
-      <span class="script-toggle-label">Presentation script (2 min)</span>
+    <h3>Key Focus: TTL Decrement</h3>
+    <div class="phases">
+      <div class="phase-card">
+        <div class="ph-label" style="color:#58a6ff">Phase 1</div>
+        <p>HTTP GET encapsulated. Packet Src: 192.168.10.5 Dst: 172.20.1.10, TTL=128. Frame Src: AA-AA Dst: BB-BB.</p>
+      </div>
+      <div class="phase-card">
+        <div class="ph-label" style="color:#3fb950">Phase 2</div>
+        <p>172.20.1.10 is remote → ARP for R1 (192.168.10.1). Gets BB-BB. Frame built and sent.</p>
+      </div>
+      <div class="phase-card">
+        <div class="ph-label" style="color:#f78166">Phase 3 — 3 hops</div>
+        <p>R1 de-encap → TTL 128→127 → re-encap CC/DD. R2 de-encap → TTL 127→126 → re-encap EE/FF. R3 de-encap → TTL 126→125 → ARPs for 22-22 → re-encap 11/22. IP address constant throughout.</p>
+      </div>
+      <div class="phase-card">
+        <div class="ph-label" style="color:#d2a8ff">Phase 4</div>
+        <p>Web Server accepts Dst MAC 22-22 ✓. FCS check ✓. L3: 172.20.1.10 ✓. L4: Port 80 → HTTP server process responds.</p>
+      </div>
     </div>
-    <div class="script-collapsible" id="s4">
-      <div class="script-block">
-        <div class="script-label">🎤 What to say — Phase 4: Arrival & De-encapsulation</div>
-        <div class="script-text">
-          <span class="action">[Point to the Web-Server on the diagram]</span><br><br>
-          "I'm covering Phase 4 — Arrival and De-encapsulation. This is the reverse of Phase 1: the frame arrives at the web server and the data is unwrapped back up the OSI stack.<br><br>
-          The frame arrives as <span class="emphasis">bits on the wire</span>. The Physical layer converts those signals back into a binary frame and passes it up to Layer 2.<br><br>
-          At Layer 2, the server's <span class="emphasis">NIC checks the destination MAC — 22-22</span>. It compares this against its own hardware MAC address stored in RAM. They match, so the frame is <span class="emphasis">accepted</span>. The NIC also verifies the <span class="emphasis">FCS trailer</span> — if the CRC doesn't match, the frame is discarded as corrupted. Otherwise, the Ethernet header and trailer are stripped, and the IPv4 packet is passed up.<br><br>
-          <span class="action">[Trace upward on the diagram]</span><br><br>
-          At Layer 3, IP checks the <span class="emphasis">destination IP — 172.16.1.99</span> — confirms it matches this host, reads the Protocol field to identify TCP, strips the IP header, and passes the segment up to Layer 4.<br><br>
-          Layer 4 reads the <span class="emphasis">destination port — port 80</span> for HTTP — strips its header, and delivers the raw application data up to Layer 7.<br><br>
-          Finally, the <span class="emphasis">web server application</span> receives the HTTP GET request, processes it, and generates an HTTP response — which then travels back down the stack and is sent all the way back to the original PC through the same routing process in reverse."
-        </div>
+
+    <div class="script-toggle" onclick="toggleScript('sc3')">
+      <button class="script-btn" id="sc3-btn">▶ Show Script</button>
+      <span class="script-lbl">Full presentation script (all 4 phases)</span>
+    </div>
+    <div class="script-body" id="sc3">
+      <div class="slabel">🎤 Script — Scenario 3: PC → R1 → R2 → R3 → Web Server</div>
+      <div class="stext">
+        <span class="em">Phase 1:</span><br>
+        <span class="act">[Point to PC-Work]</span> "The workstation is sending an HTTP request to a web server three hops away. The data gets encapsulated layer by layer — application data becomes a segment at Layer 4, then a packet at Layer 3 with source IP 192.168.10.5 and destination IP 172.20.1.10, and a TTL value of <span class="em">128</span>. Layer 2 wraps it into a frame with source MAC AA-AA and destination MAC BB-BB — which is R1 — and Layer 1 sends it as bits."<br><br>
+
+        <span class="em">Phase 2:</span><br>
+        <span class="act">[Point to the PC's subnet]</span> "The PC checks: is 172.20.1.10 on the same network as me, 192.168.10.0/24? No. So it goes through the <span class="em">default gateway R1</span>. The PC broadcasts an ARP Request, R1 replies with MAC BB-BB, and the frame is built."<br><br>
+
+        <span class="em">Phase 3:</span><br>
+        <span class="act">[Trace finger across R1 → R2 → R3]</span> "This scenario has three router hops, and this is the important thing — at <span class="em">every single hop</span>, the MAC addresses change, but the IP addresses stay the same.<br><br>
+        R1 accepts the frame, de-encapsulates, reads destination IP 172.20.1.10, decrements TTL from <span class="em">128 to 127</span>, looks up routing table — next hop is R2 — re-encapsulates: source CC-CC, destination DD-DD.<br><br>
+        R2 does the same. De-encapsulates, TTL drops from <span class="em">127 to 126</span>, re-encapsulates: source EE-EE, destination FF-FF.<br><br>
+        R3 does the same. TTL drops from <span class="em">126 to 125</span>. R3 finds 172.20.1.10 directly connected, ARPs for the web server MAC 22-22, re-encapsulates: source 11-11, destination 22-22."<br><br>
+
+        <span class="em">Phase 4:</span><br>
+        <span class="act">[Point to Web Server]</span> "The frame arrives at the web server. NIC checks Dst MAC 22-22 — matches. FCS validates, L2 stripped. IP checks 172.20.1.10 — matches, L3 stripped. Transport layer sees port 80 and passes the HTTP GET to the <span class="em">web server application</span>, which responds with the requested page."
       </div>
     </div>
   </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SCENARIO 4                                              -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="s4" class="card">
+  <div class="card-header">
+    <span class="badge" style="background:#1e1230;color:#d2a8ff">Scenario 4</span>
+    <h2>Smartphone → Wi-Fi AP → Router → Email Server</h2>
+    <span class="sub">Wireless source, single router</span>
+  </div>
+  <div class="card-body">
+    <p class="lead">A staff member sends an email from a smartphone on Wi-Fi. The email must reach the company mail server on a different subnet.</p>
+
+    <h3>Device Table</h3>
+    <table class="dtable">
+      <thead><tr><th>Device</th><th>Role</th><th>IPv4 Address</th><th>MAC</th></tr></thead>
+      <tbody>
+        <tr style="color:#58a6ff"><td>Smartphone</td><td>Source Host</td><td>192.168.50.30/24</td><td>AA-AA</td></tr>
+        <tr><td>Wi-Fi AP</td><td>Wireless Access Point (L2)</td><td>N/A</td><td>—</td></tr>
+        <tr><td>R1 G0/0</td><td>LAN Interface (Default GW)</td><td>192.168.50.1/24</td><td>BB-BB</td></tr>
+        <tr><td>R1 G0/1</td><td>Mail Server Interface</td><td>10.50.1.1/24</td><td>CC-CC</td></tr>
+        <tr style="color:#3fb950"><td>Mail-Server</td><td>Destination</td><td>10.50.1.25/24</td><td>DD-DD</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Network Diagram</h3>
+    <div class="diagram">
+      <svg viewBox="0 0 820 200" width="780" height="200" xmlns="http://www.w3.org/2000/svg" font-family="'Space Mono',monospace">
+        <defs>
+          <marker id="g4a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#d2a8ff"/></marker>
+          <marker id="g4b" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#e3b341"/></marker>
+          <marker id="g4c" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#3fb950"/></marker>
+        </defs>
+        <!-- Wireless zone -->
+        <rect x="10" y="20" width="340" height="160" rx="8" fill="#1a1230" stroke="#3a1e60" stroke-width="1.5"/>
+        <text x="180" y="42" text-anchor="middle" fill="#d2a8ff" font-size="11" font-weight="bold">Wi-Fi Zone (192.168.50.0/24)</text>
+        <!-- Mail zone -->
+        <rect x="540" y="20" width="270" height="160" rx="8" fill="#0a2a15" stroke="#1e4d1e" stroke-width="1.5"/>
+        <text x="675" y="42" text-anchor="middle" fill="#3fb950" font-size="11" font-weight="bold">Mail Subnet (10.50.1.0/24)</text>
+
+        <!-- Smartphone -->
+        <rect x="25" y="70" width="75" height="60" rx="6" fill="#1c2330" stroke="#d2a8ff" stroke-width="1.5"/>
+        <text x="62" y="90" text-anchor="middle" fill="#d2a8ff" font-size="11">📱</text>
+        <text x="62" y="104" text-anchor="middle" fill="#e2d4ff" font-size="10">Phone</text>
+        <text x="62" y="115" text-anchor="middle" fill="#8b949e" font-size="9">AA-AA</text>
+        <text x="62" y="125" text-anchor="middle" fill="#8b949e" font-size="9">192.168.50.30</text>
+
+        <!-- Radio waves -->
+        <path d="M100,100 Q115,85 130,100" stroke="#d2a8ff" stroke-width="1.5" fill="none" stroke-dasharray="3,2"/>
+        <path d="M100,100 Q120,78 140,100" stroke="#d2a8ff" stroke-width="1" fill="none" stroke-dasharray="3,2" opacity="0.5"/>
+        <text x="120" y="76" text-anchor="middle" fill="#d2a8ff" font-size="9">Wi-Fi</text>
+
+        <!-- AP -->
+        <rect x="155" y="70" width="75" height="60" rx="6" fill="#1c2330" stroke="#8b949e" stroke-width="1.5"/>
+        <text x="192" y="90" text-anchor="middle" fill="#8b949e" font-size="11">📡</text>
+        <text x="192" y="104" text-anchor="middle" fill="#e6edf3" font-size="10">Wi-Fi AP</text>
+        <text x="192" y="116" text-anchor="middle" fill="#8b949e" font-size="9">Layer 2</text>
+        <text x="192" y="127" text-anchor="middle" fill="#8b949e" font-size="9">bridges frames</text>
+
+        <!-- AP → R1 -->
+        <line x1="230" y1="100" x2="315" y2="100" stroke="#d2a8ff" stroke-width="1.5" marker-end="url(#g4a)"/>
+        <text x="272" y="94" text-anchor="middle" fill="#8b949e" font-size="9">Dst:BB-BB</text>
+
+        <!-- R1 -->
+        <rect x="315" y="55" width="85" height="90" rx="6" fill="#1c2330" stroke="#e3b341" stroke-width="1.5"/>
+        <text x="357" y="78" text-anchor="middle" fill="#e3b341" font-size="13">⬡</text>
+        <text x="357" y="93" text-anchor="middle" fill="#fff" font-size="11" font-weight="bold">R1</text>
+        <text x="357" y="106" text-anchor="middle" fill="#8b949e" font-size="9">G0/0: BB-BB</text>
+        <text x="357" y="117" text-anchor="middle" fill="#8b949e" font-size="9">192.168.50.1</text>
+        <text x="357" y="129" text-anchor="middle" fill="#8b949e" font-size="9">G0/1: CC-CC</text>
+        <text x="357" y="140" text-anchor="middle" fill="#8b949e" font-size="9">10.50.1.1</text>
+
+        <!-- R1 → Mail -->
+        <line x1="400" y1="100" x2="555" y2="100" stroke="#3fb950" stroke-width="1.5" marker-end="url(#g4c)"/>
+        <text x="477" y="94" text-anchor="middle" fill="#8b949e" font-size="9">Src:CC-CC Dst:DD-DD</text>
+
+        <!-- Mail Server -->
+        <rect x="555" y="70" width="85" height="60" rx="6" fill="#1c2330" stroke="#3fb950" stroke-width="1.5"/>
+        <text x="597" y="90" text-anchor="middle" fill="#3fb950" font-size="11">✉️</text>
+        <text x="597" y="103" text-anchor="middle" fill="#b5d9b5" font-size="10">Mail Server</text>
+        <text x="597" y="115" text-anchor="middle" fill="#8b949e" font-size="9">DD-DD</text>
+        <text x="597" y="125" text-anchor="middle" fill="#8b949e" font-size="9">10.50.1.25</text>
+
+        <text x="190" y="170" text-anchor="middle" fill="#d2a8ff" font-size="9">AP bridges wirelessly — no L3 changes, just converts 802.11 → Ethernet</text>
+      </svg>
+    </div>
+
+    <h3>Key Focus: Wi-Fi Access Point (L2 Bridge)</h3>
+    <div class="phases">
+      <div class="phase-card">
+        <div class="ph-label" style="color:#d2a8ff">Phase 1</div>
+        <p>Email (SMTP) → Segment → Packet (Src: 192.168.50.30, Dst: 10.50.1.25) → Frame (Src: AA-AA, Dst: BB-BB) → transmitted as 802.11 radio waves (Wi-Fi), NOT electrical signals.</p>
+      </div>
+      <div class="phase-card">
+        <div class="ph-label" style="color:#3fb950">Phase 2</div>
+        <p>10.50.1.25 ≠ 192.168.50.0/24 → default gateway 192.168.50.1. ARP broadcast sent over Wi-Fi. AP bridges it to R1. R1 replies unicast with BB-BB.</p>
+      </div>
+      <div class="phase-card">
+        <div class="ph-label" style="color:#f78166">Phase 3</div>
+        <p>AP is Layer 2 only — it converts 802.11 wireless frames to wired Ethernet and passes them to R1 (no IP changes). R1 de-encap, looks up 10.50.1.25 on G0/1, ARPs for DD-DD, re-encap: Src CC-CC, Dst DD-DD.</p>
+      </div>
+      <div class="phase-card">
+        <div class="ph-label" style="color:#58a6ff">Phase 4</div>
+        <p>Mail Server NIC: Dst MAC DD-DD ✓. FCS ✓. IP 10.50.1.25 ✓. Port 25 (SMTP) → mail service processes incoming message.</p>
+      </div>
+    </div>
+
+    <div class="script-toggle" onclick="toggleScript('sc4')">
+      <button class="script-btn" id="sc4-btn">▶ Show Script</button>
+      <span class="script-lbl">Full presentation script (all 4 phases)</span>
+    </div>
+    <div class="script-body" id="sc4">
+      <div class="slabel">🎤 Script — Scenario 4: Smartphone → Wi-Fi → Router → Email Server</div>
+      <div class="stext">
+        <span class="em">Phase 1:</span><br>
+        <span class="act">[Point to Smartphone]</span> "The scenario is a staff member sending an email from their smartphone on Wi-Fi. The email is generated at the app layer — SMTP. It gets encapsulated down the stack: segment at Layer 4, packet at Layer 3 with source IP 192.168.50.30 and destination 10.50.1.25, and a frame at Layer 2 with source MAC AA-AA and destination MAC BB-BB, which is R1. At Layer 1, since this is Wi-Fi, the bits are transmitted as <span class="em">radio waves using the 802.11 standard</span> — not electrical signals like a cable would."<br><br>
+
+        <span class="em">Phase 2:</span><br>
+        <span class="act">[Point to the phone and default gateway]</span> "The smartphone checks: is 10.50.1.25 on my network 192.168.50.0/24? No — so it uses the <span class="em">default gateway R1 at 192.168.50.1</span>. It broadcasts an ARP Request over Wi-Fi. The <span class="em">Wi-Fi Access Point bridges this</span> — it's a Layer 2 device, just like a switch, so it converts the wireless frame to a wired Ethernet frame and passes it to R1. R1 replies unicast with BB-BB."<br><br>
+
+        <span class="em">Phase 3:</span><br>
+        <span class="act">[Point to R1]</span> "The frame reaches R1 through the AP. R1 de-encapsulates, reads destination IP 10.50.1.25, checks routing table — directly connected on G0/1. R1 ARPs for the mail server's MAC DD-DD, re-encapsulates with source CC-CC and destination DD-DD, and forwards it out."<br><br>
+
+        <span class="em">Phase 4:</span><br>
+        <span class="act">[Point to Mail Server]</span> "The mail server NIC gets the frame. Checks Dst MAC DD-DD — matches. FCS valid — strips L2. IP checks 10.50.1.25 — matches, strips L3. Transport layer reads port 25 — that's SMTP — and passes the email data to the <span class="em">mail server application</span>, which processes and stores the incoming message."
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SCENARIO 5                                              -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="s5" class="card">
+  <div class="card-header">
+    <span class="badge" style="background:#0a1f2a;color:#79c0ff">Scenario 5</span>
+    <h2>PC → Switch → FTP Server (Same LAN — No Router)</h2>
+    <span class="sub">Local communication, ARP for destination directly</span>
+  </div>
+  <div class="card-body">
+    <p class="lead">A PC uploads a file to an FTP server on the <em>same</em> subnet. No router needed — the MAC addresses in the frame target the destination host directly.</p>
+
+    <h3>Device Table</h3>
+    <table class="dtable">
+      <thead><tr><th>Device</th><th>Role</th><th>IPv4 Address</th><th>MAC</th></tr></thead>
+      <tbody>
+        <tr style="color:#58a6ff"><td>PC-Office</td><td>Source Host</td><td>10.0.1.10/24</td><td>AA-AA</td></tr>
+        <tr><td>Switch SW1</td><td>Layer 2 Switch</td><td>N/A</td><td>—</td></tr>
+        <tr style="color:#3fb950"><td>FTP-Server</td><td>Destination (same subnet)</td><td>10.0.1.50/24</td><td>BB-BB</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Network Diagram</h3>
+    <div class="diagram">
+      <svg viewBox="0 0 820 180" width="780" height="180" xmlns="http://www.w3.org/2000/svg" font-family="'Space Mono',monospace">
+        <defs>
+          <marker id="g5a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#79c0ff"/></marker>
+          <marker id="g5b" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#3fb950"/></marker>
+          <marker id="g5c" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#f78166" stroke-dasharray="2,2"/></marker>
+        </defs>
+        <!-- Single LAN zone -->
+        <rect x="30" y="15" width="760" height="150" rx="8" fill="#0c1e2a" stroke="#1e3a5f" stroke-width="1.5"/>
+        <text x="410" y="37" text-anchor="middle" fill="#79c0ff" font-size="11" font-weight="bold">Single LAN (10.0.1.0/24) — No Router Needed</text>
+
+        <!-- PC -->
+        <rect x="60" y="55" width="90" height="70" rx="6" fill="#1c2330" stroke="#79c0ff" stroke-width="1.5"/>
+        <text x="105" y="75" text-anchor="middle" fill="#79c0ff" font-size="11">🖥</text>
+        <text x="105" y="89" text-anchor="middle" fill="#cce0ff" font-size="10">PC-Office</text>
+        <text x="105" y="101" text-anchor="middle" fill="#8b949e" font-size="9">AA-AA</text>
+        <text x="105" y="112" text-anchor="middle" fill="#8b949e" font-size="9">10.0.1.10</text>
+
+        <!-- ARP broadcast arrow (dashed) -->
+        <line x1="150" y1="70" x2="360" y2="70" stroke="#f78166" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#g5c)"/>
+        <text x="255" y="63" text-anchor="middle" fill="#f78166" font-size="9">① ARP broadcast (who is 10.0.1.50?)</text>
+
+        <!-- Switch -->
+        <rect x="330" y="55" width="90" height="70" rx="6" fill="#1c2330" stroke="#8b949e" stroke-width="1.5"/>
+        <text x="375" y="75" text-anchor="middle" fill="#8b949e" font-size="11">⊞</text>
+        <text x="375" y="89" text-anchor="middle" fill="#e6edf3" font-size="10">SW1</text>
+        <text x="375" y="101" text-anchor="middle" fill="#8b949e" font-size="9">L2 Switch</text>
+        <text x="375" y="112" text-anchor="middle" fill="#8b949e" font-size="9">floods broadcast</text>
+
+        <!-- ARP reply (dashed back) -->
+        <line x1="420" y1="80" x2="600" y2="80" stroke="#3fb950" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#g5b)"/>
+        <text x="510" y="97" text-anchor="middle" fill="#3fb950" font-size="9">② ARP reply: 10.0.1.50 is BB-BB (unicast)</text>
+
+        <!-- FTP Server -->
+        <rect x="600" y="55" width="100" height="70" rx="6" fill="#1c2330" stroke="#3fb950" stroke-width="1.5"/>
+        <text x="650" y="75" text-anchor="middle" fill="#3fb950" font-size="11">📁</text>
+        <text x="650" y="89" text-anchor="middle" fill="#b5d9b5" font-size="10">FTP Server</text>
+        <text x="650" y="101" text-anchor="middle" fill="#8b949e" font-size="9">BB-BB</text>
+        <text x="650" y="112" text-anchor="middle" fill="#8b949e" font-size="9">10.0.1.50</text>
+
+        <!-- Actual data frame arrow -->
+        <line x1="150" y1="110" x2="600" y2="110" stroke="#79c0ff" stroke-width="2" marker-end="url(#g5a)"/>
+        <text x="375" y="130" text-anchor="middle" fill="#79c0ff" font-size="9">③ Unicast frame: Src AA-AA, Dst BB-BB (direct to FTP server — NO default gateway used)</text>
+      </svg>
+    </div>
+
+    <h3>Key Focus: Same-Subnet = No Router</h3>
+    <div class="phases">
+      <div class="phase-card">
+        <div class="ph-label" style="color:#79c0ff">Phase 1</div>
+        <p>FTP data encapsulated. Packet: Src 10.0.1.10, Dst 10.0.1.50. Frame: Src AA-AA, <strong>Dst BB-BB (the FTP Server directly)</strong> — NOT a router MAC.</p>
+      </div>
+      <div class="phase-card">
+        <div class="ph-label" style="color:#3fb950">Phase 2 — KEY DIFFERENCE</div>
+        <p>PC checks: 10.0.1.50 is ON 10.0.1.0/24 → same subnet! PC ARPs for <strong>10.0.1.50 directly</strong> (not the gateway). Switch floods broadcast, FTP Server replies unicast with BB-BB.</p>
+      </div>
+      <div class="phase-card">
+        <div class="ph-label" style="color:#f78166">Phase 3 — No Router</div>
+        <p>No routing needed. Switch forwards the frame using its MAC table. L2 only. No IP decrement, no new frame, no re-encapsulation. Frame goes straight from PC to FTP Server via the switch.</p>
+      </div>
+      <div class="phase-card">
+        <div class="ph-label" style="color:#d2a8ff">Phase 4</div>
+        <p>FTP Server NIC: Dst MAC BB-BB ✓ → strips L2 → IP 10.0.1.50 ✓ → strips L3 → Port 21 (FTP) → file transfer service processes the upload.</p>
+      </div>
+    </div>
+
+    <div class="script-toggle" onclick="toggleScript('sc5')">
+      <button class="script-btn" id="sc5-btn">▶ Show Script</button>
+      <span class="script-lbl">Full presentation script (all 4 phases)</span>
+    </div>
+    <div class="script-body" id="sc5">
+      <div class="slabel">🎤 Script — Scenario 5: PC → Switch → FTP Server (Same LAN)</div>
+      <div class="stext">
+        <span class="em">Phase 1:</span><br>
+        <span class="act">[Point to PC-Office]</span> "This scenario is different from the others — the PC and the FTP server are on the <span class="em">same subnet</span>, so no router is involved. The PC uploads a file. The FTP data gets encapsulated down the stack — segment at Layer 4, packet at Layer 3 with source IP 10.0.1.10 and destination IP 10.0.1.50. At Layer 2, the frame is built with source MAC AA-AA. But here's the key difference — the <span class="em">destination MAC is the FTP server's MAC directly</span>, not the router's."<br><br>
+
+        <span class="em">Phase 2:</span><br>
+        <span class="act">[Point to the PC's subnet]</span> "The PC compares the destination 10.0.1.50 against its own subnet 10.0.1.0/24. They <span class="em">match</span> — same network. So the PC knows it can reach the server directly without a default gateway. It broadcasts an ARP Request asking 'who has 10.0.1.50?'. The switch floods this broadcast to all ports. The FTP server replies unicast with its MAC BB-BB. The PC now knows the exact MAC of the destination."<br><br>
+
+        <span class="em">Phase 3:</span><br>
+        <span class="act">[Point to the Switch]</span> "Since both devices are on the same LAN, the only device involved is the <span class="em">switch</span>. The switch reads the destination MAC BB-BB from its MAC address table and forwards the frame out the correct port — straight to the FTP server. No de-encapsulation, no routing table lookup, no TTL decrement, no re-encapsulation. The Layer 3 IP packet is never read by any intermediate device."<br><br>
+
+        <span class="em">Phase 4:</span><br>
+        <span class="act">[Point to FTP Server]</span> "The FTP server NIC receives the frame. Checks Dst MAC BB-BB — matches. FCS valid. Strips L2. IP checks 10.0.1.50 — matches, strips L3. Transport layer reads port 21 — FTP — and passes the file data to the <span class="em">FTP service</span>. The file upload is complete."
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- CONCEPT NOTES                                           -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="notes" class="notes-section">
+  <div class="notes-header">📖 Key Concept Notes — Default Gateway, ARP, MAC, Routing & More</div>
+  <div class="notes-body">
+
+    <div class="concept">
+      <div class="concept-title">Default Gateway</div>
+      <div class="concept-body">
+        The <span class="kw">default gateway</span> is the router interface on the same subnet as the host. When a host wants to send data to any IP address <em>outside</em> its own subnet, it sends the frame to the default gateway's MAC address instead.<br><br>
+        <strong>How the host decides:</strong> It performs a bitwise AND between the destination IP and its subnet mask. If the result equals the host's own network address → <span class="kw">local</span>. If different → <span class="kw">remote</span>, use the default gateway.
+        <div class="codeblock">
+          <span class="lbl">Host IP:         </span><span class="val">192.168.1.10 /24</span><br>
+          <span class="lbl">Destination:     </span><span class="val">172.16.1.50</span><br>
+          <span class="lbl">Network match?   </span><span class="hi">NO → remote → send to default gateway</span><br><br>
+          <span class="lbl">Destination:     </span><span class="val">192.168.1.50</span><br>
+          <span class="lbl">Network match?   </span><span class="ok">YES → local → ARP for destination directly</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="concept">
+      <div class="concept-title">ARP — Address Resolution Protocol</div>
+      <div class="concept-body">
+        ARP resolves an <span class="kw">IP address to a MAC address</span>. Before a host can send a frame, it needs to know the MAC of the next hop (either the destination on the same LAN, or the default gateway on a remote LAN).
+        <div class="codeblock">
+          <span class="lbl">ARP Request (broadcast):</span><br>
+          <span class="val">  Dst MAC: FF-FF-FF-FF-FF-FF</span>  <span class="lbl">← sent to everyone on LAN</span><br>
+          <span class="val">  Src MAC: AA-AA  Src IP: 192.168.1.10</span><br>
+          <span class="val">  Target IP: 192.168.1.1</span>  <span class="lbl">← who has this IP?</span><br><br>
+          <span class="lbl">ARP Reply (unicast):</span><br>
+          <span class="val">  Dst MAC: AA-AA  Src MAC: BB-BB</span><br>
+          <span class="val">  "192.168.1.1 is at BB-BB"</span>  <span class="ok">← stored in ARP cache</span>
+        </div>
+        <strong>Important:</strong> ARP broadcasts are never forwarded by routers — they stay within the local subnet. The ARP cache stores recent mappings to avoid repeated broadcasts (expires after ~2–20 min).
+      </div>
+    </div>
+
+    <div class="concept">
+      <div class="concept-title">MAC Addresses — Hop-to-Hop vs IP Addresses — End-to-End</div>
+      <div class="concept-body">
+        This is the <span class="kw">most important concept</span> in Phase 3. Understand why they behave differently:
+        <div class="codeblock">
+          <span class="lbl">IP Addresses:</span>  <span class="ok">NEVER change end-to-end</span><br>
+          <span class="val">  Src IP = original sender all the way to destination</span><br>
+          <span class="val">  Dst IP = final destination all the way from source</span><br><br>
+          <span class="lbl">MAC Addresses:</span> <span class="hi">change at EVERY router hop</span><br>
+          <span class="val">  Only meaningful on the current local link segment</span><br>
+          <span class="val">  Router strips old MAC, adds new MACs for next segment</span>
+        </div>
+        Think of it like a parcel delivery: the <em>address label</em> (IP) always says "from Alice to Bob". But the <em>delivery truck</em> (frame/MAC) changes at every distribution centre (router) depending on which local route is used next.
+      </div>
+    </div>
+
+    <div class="concept">
+      <div class="concept-title">Encapsulation & PDU Names</div>
+      <div class="concept-body">
+        <div class="codeblock">
+          <span class="lbl">Layer 7 (Application):  </span><span class="val">Data / Message</span><br>
+          <span class="lbl">Layer 4 (Transport):    </span><span class="val">Segment</span>  <span class="lbl">(+ source/destination port)</span><br>
+          <span class="lbl">Layer 3 (Network):      </span><span class="val">Packet</span>  <span class="lbl">(+ source/destination IP, TTL, Protocol)</span><br>
+          <span class="lbl">Layer 2 (Data Link):    </span><span class="val">Frame</span>   <span class="lbl">(+ source/destination MAC, EtherType, FCS)</span><br>
+          <span class="lbl">Layer 1 (Physical):     </span><span class="val">Bits</span>    <span class="lbl">(electrical / light / radio signals)</span>
+        </div>
+        De-encapsulation is the reverse — each layer strips its own header as the data travels UP the stack at the receiver.
+      </div>
+    </div>
+
+    <div class="concept">
+      <div class="concept-title">TTL — Time To Live</div>
+      <div class="concept-body">
+        <span class="kw">TTL</span> is a field in the IPv4 header. It starts at a value set by the source OS (commonly 128 for Windows, 64 for Linux/Mac) and is <span class="kw">decremented by 1 at every router</span>. If TTL reaches 0, the router discards the packet and sends an <span class="kw">ICMP Time Exceeded</span> message back to the source. This prevents packets from looping forever.
+        <div class="codeblock">
+          <span class="val">PC sends:  TTL = 128</span><br>
+          <span class="arrow">→ </span><span class="val">R1 receives: TTL 128 → 127, forwards</span><br>
+          <span class="arrow">→ </span><span class="val">R2 receives: TTL 127 → 126, forwards</span><br>
+          <span class="arrow">→ </span><span class="val">R3 receives: TTL 126 → 125, forwards</span><br>
+          <span class="ok">→ Destination receives packet with TTL = 125</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="concept">
+      <div class="concept-title">What a Router Does at Each Hop (Phase 3 Detail)</div>
+      <div class="concept-body">
+        Four clear steps at each router:
+        <div class="codeblock">
+          <span class="val">1. Accept</span>    <span class="lbl">— NIC checks incoming Dst MAC matches its own interface MAC</span><br>
+          <span class="val">2. De-encap</span>  <span class="lbl">— Strip Ethernet header + FCS trailer, expose IPv4 packet</span><br>
+          <span class="val">3. Route</span>     <span class="lbl">— Read Dst IP, look up routing table, find next hop, decrement TTL</span><br>
+          <span class="val">4. Re-encap</span>  <span class="lbl">— Build new Ethernet frame with new Src/Dst MACs for next link</span>
+        </div>
+        The routing table is the "internal map" — it stores network prefixes and which interface/next-hop to use for each one. If no match is found, the router uses a <span class="kw">default route (0.0.0.0/0)</span> if one is configured, or drops the packet.
+      </div>
+    </div>
+
+    <div class="concept">
+      <div class="concept-title">Layer 2 Devices: Switch vs Wi-Fi AP</div>
+      <div class="concept-body">
+        <div class="codeblock">
+          <span class="val">Switch:</span><br>
+          <span class="lbl">  Operates at Layer 2 only</span><br>
+          <span class="lbl">  Maintains a MAC address table (learns which port = which MAC)</span><br>
+          <span class="lbl">  Forwards frames to the correct port based on Dst MAC</span><br>
+          <span class="lbl">  Floods unknown Dst MACs and broadcasts to all ports</span><br>
+          <span class="lbl">  Does NOT modify IP, MAC, or TTL — purely passes the frame</span><br><br>
+          <span class="val">Wi-Fi Access Point (AP):</span><br>
+          <span class="lbl">  Also Layer 2 — acts as a wireless bridge</span><br>
+          <span class="lbl">  Converts 802.11 wireless frames ↔ Ethernet wired frames</span><br>
+          <span class="lbl">  Does NOT route — no IP changes, no TTL changes</span><br>
+          <span class="lbl">  ARP broadcasts pass through the AP to the wired network</span>
+        </div>
+        <div class="tip"><strong>Key:</strong> Neither a switch nor an AP is involved in Phase 3 routing — they are transparent Layer 2 forwarders. Only routers perform de-encapsulation and re-encapsulation at Layer 3.</div>
+      </div>
+    </div>
+
+    <div class="concept">
+      <div class="concept-title">FCS / CRC — Frame Check Sequence</div>
+      <div class="concept-body">
+        The <span class="kw">FCS (Frame Check Sequence)</span> is a 4-byte CRC value appended as an Ethernet trailer. The sender calculates it from the frame contents. The receiver recalculates it on arrival — if the values don't match, the frame was corrupted in transit and is <span class="kw">silently discarded</span> at Layer 2. This is <em>error detection only</em>, not error correction — the upper layers (TCP) handle retransmission.
+      </div>
+    </div>
+
+    <div class="concept">
+      <div class="concept-title">EtherType & Protocol Fields</div>
+      <div class="concept-body">
+        <div class="codeblock">
+          <span class="lbl">Ethernet EtherType field (Layer 2 header):</span><br>
+          <span class="val">  0x0800</span> <span class="lbl">= IPv4 payload</span><br>
+          <span class="val">  0x86DD</span> <span class="lbl">= IPv6 payload</span><br>
+          <span class="val">  0x0806</span> <span class="lbl">= ARP payload</span><br><br>
+          <span class="lbl">IPv4 Protocol field (Layer 3 header):</span><br>
+          <span class="val">  0x06 (6)</span>   <span class="lbl">= TCP segment inside</span><br>
+          <span class="val">  0x11 (17)</span>  <span class="lbl">= UDP segment inside</span><br>
+          <span class="val">  0x01 (1)</span>   <span class="lbl">= ICMP message inside</span>
+        </div>
+        These fields tell each layer's protocol handler what type of data is inside — so the right handler processes it during de-encapsulation.
+      </div>
+    </div>
+
+    <div class="concept">
+      <div class="concept-title">Common Port Numbers (Layer 4)</div>
+      <div class="concept-body">
+        You don't need TCP/UDP internals, but know these ports:
+        <div class="codeblock">
+          <span class="val">Port 80</span>  <span class="lbl">= HTTP  (web browsing)</span><br>
+          <span class="val">Port 443</span> <span class="lbl">= HTTPS (secure web)</span><br>
+          <span class="val">Port 25</span>  <span class="lbl">= SMTP  (sending email)</span><br>
+          <span class="val">Port 21</span>  <span class="lbl">= FTP   (file transfer)</span><br>
+          <span class="val">Port 22</span>  <span class="lbl">= SSH   (secure remote access)</span><br>
+          <span class="val">Port 53</span>  <span class="lbl">= DNS   (domain name resolution)</span>
+        </div>
+        At Phase 4, the Transport layer reads the destination port to know which application to hand the data to.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>IT1x13 · Week 8 · Scenario Bank · Topics 2–7 · Layers 1–3</footer>
 </div>
 
 <script>
@@ -623,78 +947,6 @@ function toggleScript(id) {
   el.classList.toggle('open', !isOpen);
   btn.textContent = isOpen ? '▶ Show Script' : '▼ Hide Script';
 }
-function showScenario(n) {
-  for (let i = 0; i < 5; i++) {
-    document.getElementById('sc-' + i).style.display = i === n ? '' : 'none';
-    document.getElementById('tab-' + i).classList.toggle('active', i === n);
-  }
-}
 </script>
-
-<!-- Q&A BANK -->
-<div id="qa" class="qa-section">
-  <div class="qa-header">⚡ Q&amp;A Bank — Likely Tutor Questions &amp; Model Answers</div>
-  <div class="qa-body">
-
-    <div class="qa-item">
-      <div class="q">Does the PC try to find the web server's MAC address directly?</div>
-      <div class="a">No. The PC compares its IP and subnet mask with the destination (172.16.1.99). The network prefixes differ, so the PC recognises it as a remote host and sends the frame to its default gateway (192.168.10.1) instead.</div>
-    </div>
-
-    <div class="qa-item">
-      <div class="q">If the PC doesn't know the router's MAC yet, how does it get it?</div>
-      <div class="a">It broadcasts an ARP Request to FF-FF-FF-FF-FF-FF saying "Who has 192.168.10.1?". Only R1 (owning that IP) replies unicast with its MAC BB-BB. The PC stores this in its ARP table and then builds the frame.</div>
-    </div>
-
-    <div class="qa-item">
-      <div class="q">When the frame hits R1, what does the router do with the MAC addresses?</div>
-      <div class="a">R1 strips the old L2 header (Src: AA-AA, Dst: BB-BB). It reads the L3 destination IP, performs a routing table lookup, then creates a brand new Ethernet frame for the next link — with new source and destination MAC addresses (CC-CC and DD-DD) for that segment.</div>
-    </div>
-
-    <div class="qa-item">
-      <div class="q">Why do MAC addresses change at every hop, but IP addresses don't?</div>
-      <div class="a">MAC addresses are Layer 2 (local link) identifiers — they only have meaning on a single network segment. Each new link is essentially a new "envelope." IP addresses are Layer 3 end-to-end identifiers that carry the original source and final destination across the entire routed path.</div>
-    </div>
-
-    <div class="qa-item">
-      <div class="q">What if the destination IP was changed to 192.168.10.50 instead?</div>
-      <div class="a">The PC would recognise it as being on the same /24 subnet. It would ARP directly for 192.168.10.50's MAC and place that MAC in the Dst MAC field — no router (default gateway) would be involved in the Layer 2 forwarding.</div>
-    </div>
-
-    <div class="qa-item">
-      <div class="q">What happens if TTL reaches 0?</div>
-      <div class="a">The router that decrements TTL to zero discards the packet and sends an ICMP "Time Exceeded" message back to the source IP. This prevents packets from looping forever in a network.</div>
-    </div>
-
-    <div class="qa-item">
-      <div class="q">How does the web server's NIC know the frame is for it?</div>
-      <div class="a">The NIC compares the incoming frame's destination MAC (22-22) against its own hardware MAC address stored in RAM. A match means the frame is accepted and passed up the stack. No match means the frame is silently discarded at Layer 2.</div>
-    </div>
-
-    <div class="qa-item">
-      <div class="q">What is the Protocol field in the IPv4 header used for?</div>
-      <div class="a">It identifies the Layer 4 protocol carried inside the packet — for example 0x06 = TCP, 0x11 = UDP, 0x01 = ICMP. When Layer 3 de-encapsulates the packet, it reads this field to pass the segment to the correct transport-layer handler.</div>
-    </div>
-
-    <div class="qa-item">
-      <div class="q">What is the EtherType field in the Ethernet frame?</div>
-      <div class="a">It identifies the Layer 3 protocol in the frame's payload — 0x0800 for IPv4, 0x86DD for IPv6, 0x0806 for ARP. The receiving NIC uses this to route the payload to the correct protocol handler after stripping the frame header.</div>
-    </div>
-
-    <div class="qa-item">
-      <div class="q">What is the FCS / CRC trailer for?</div>
-      <div class="a">The Frame Check Sequence is computed by the sender over the frame contents and appended as a trailer. The receiver recalculates it upon arrival. If the values differ, the frame was corrupted in transit and is discarded. This is Layer 2 error detection — not correction.</div>
-    </div>
-
-    <div class="qa-item">
-      <div class="q">What is the difference between a unicast, broadcast, and multicast MAC?</div>
-      <div class="a">Unicast MAC is a unique address for one specific device. Broadcast (FF-FF-FF-FF-FF-FF) is received and processed by all devices on the LAN — used by ARP. Multicast (starting 01-00-5E for IPv4) is received only by devices that have joined that specific multicast group. Broadcasts and multicasts are not forwarded by routers.</div>
-    </div>
-
-  </div>
-</div>
-
-<footer>IT1x13 · Week 8 · The Packet's Journey · Topics 2–7 · Layers 1–3</footer>
-</div>
 </body>
 </html>
