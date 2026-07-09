@@ -1158,16 +1158,26 @@ function runVLSM(){
     return `<tr>
       <td>${r.name}</td>
       <td>${r.hostsNeeded}</td>
-      <td>${r.network}/${r.prefix}</td>
-      <td>${r.mask}</td>
-      <td>${r.firstUsable} – ${r.lastUsable}</td>
-      <td>${r.broadcast}</td>
+      <td>${r.mask} /${r.prefix}</td>
       <td>${r.usableHosts}</td>
+      <td>${r.network}</td>
+      <td>${r.firstUsable}</td>
+      <td>${r.lastUsable}</td>
+      <td>${r.broadcast}</td>
     </tr>`;
   }).join('');
   tableWrap.innerHTML = `
     <table class="outtable">
-      <tr><th>Subnet / Link</th><th>Hosts Needed</th><th>Network</th><th>Mask</th><th>Usable Range</th><th>Broadcast</th><th>Usable Hosts</th></tr>
+      <tr>
+        <th>Subnet / Link</th>
+        <th>Requirements (No. IPs)</th>
+        <th>Subnet Mask</th>
+        <th>Usable Host</th>
+        <th>Network Address</th>
+        <th>First Usable IP Address</th>
+        <th>Last Usable IP Address</th>
+        <th>Broadcast Address</th>
+      </tr>
       ${rowsHtml}
     </table>
   `;
